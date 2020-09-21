@@ -2,8 +2,9 @@ import 'package:Taskist/constants.dart';
 import 'package:Taskist/models/task_model.dart';
 import 'package:Taskist/models/tasklist_model.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
+import 'package:Taskist/widgets/taskity_texfield.dart';
+import 'package:Taskist/widgets/task_tile.dart';
 
 GlobalKey<ScaffoldState> scaffoldstate = GlobalKey<ScaffoldState>();
 
@@ -12,36 +13,49 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-        //resizeToAvoidBottomPadding: false,
+        floatingActionButton: FloatingActionButton(
+          child: Icon(
+            Icons.add,
+            size: 40,
+          ),
+          onPressed: () {
+            scaffoldstate.currentState.showBottomSheet(
+              (context) => buildBottomSheetContainer(context),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40),
+                  topRight: Radius.circular(40),
+                ),
+              ),
+              backgroundColor: Colors.blue,
+            );
+          },
+        ),
         key: scaffoldstate,
         body: Container(
           color: kprimaryDarkColor,
-//          height: MediaQuery.of(context).size.height,
-//          width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
-              RaisedButton(
-                onPressed: () {
-                  scaffoldstate.currentState.showBottomSheet(
-                    (context) => buildBottomSheetContainer(context),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40),
-                      ),
-                    ),
-                    backgroundColor: Colors.blue,
-                  );
-                },
-              ),
-              Consumer<TaskListModel>(builder: (_, newList, __) {
-                return ListView.builder(
+              Consumer<TaskListModel>(
+                builder: (_, newList, __) {
+                  return ListView.builder(
                     shrinkWrap: true,
                     itemCount: newList.tasks.length,
                     itemBuilder: (_, idx) {
-                      return Text(newList.tasks.toList()[idx].taskName);
-                    });
-              }),
+                      return Dismissible(
+                        onDismissed: (_) {
+                          newList
+                              .removeTask(newList.tasks.toList()[idx].taskId);
+                        },
+                        key: newList.tasks.toList()[idx].taskId,
+                        child: TaskTile(
+                          title: newList.tasks.toList()[idx].taskName,
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -106,8 +120,8 @@ class MainScreen extends StatelessWidget {
               onPressed: () {
                 context.read<TaskListModel>().addTask(
                       TaskModel(
-                        taskName: fieldList[0]._controller.text,
-                        time: fieldList[1]._controller.text,
+                        taskName: fieldList[0].controller.text,
+                        time: fieldList[1].controller.text,
                         repeats: [],
                       ),
                     );
@@ -116,41 +130,6 @@ class MainScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class TaskityTextField extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController();
-  final String title;
-  final String hintText;
-  TaskityTextField({this.title, this.hintText});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 10),
-      child: TextField(
-        textAlign: TextAlign.left,
-        decoration: InputDecoration(
-          labelText: title,
-          labelStyle: TextStyle(color: kTextColor),
-          hintText: hintText,
-          hintStyle: TextStyle(color: kTextColor),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 2, color: kaccentColor),
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 2, color: kaccentColor),
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-          ),
-        ),
-        controller: _controller,
       ),
     );
   }

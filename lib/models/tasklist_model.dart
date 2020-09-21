@@ -10,14 +10,14 @@ class TaskListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool contains(int id) {
+  bool contains(UniqueKey id) {
     for (var item in tasks) {
       if (item.taskId == id) return true;
     }
     return false;
   }
 
-  bool removeTask(int id) {
+  bool removeTask(UniqueKey id) {
     if (contains(id)) {
       for (var item in tasks) {
         if (item.taskId == id) {
