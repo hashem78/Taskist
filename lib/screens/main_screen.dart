@@ -3,7 +3,6 @@ import 'package:Taskist/models/tasklist_model.dart';
 import 'package:Taskist/screens/addtask_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:Taskist/widgets/taskity_texfield.dart';
 import 'package:Taskist/widgets/task_tile.dart';
 
 GlobalKey<ScaffoldState> scaffoldstate = GlobalKey<ScaffoldState>();
