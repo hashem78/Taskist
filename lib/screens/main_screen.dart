@@ -44,9 +44,13 @@ class MainScreen extends StatelessWidget {
                       newList.removeTask(newList.tasks.toList()[idx].taskId);
                     },
                     key: newList.tasks.toList()[idx].taskId,
-                    child: TaskTile(
-                      title: newList.tasks.toList()[idx].taskName,
-                      priorityColor: newList.tasks.toList()[idx].priority.color,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: TaskTile(
+                        title: newList.tasks.toList()[idx].taskName,
+                        priorityColor:
+                            newList.tasks.toList()[idx].priority.color,
+                      ),
                     ),
                   );
                 },
