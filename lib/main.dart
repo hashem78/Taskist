@@ -1,4 +1,5 @@
 import 'package:Taskist/constants.dart';
+import 'package:Taskist/models/radiopriority_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
@@ -24,6 +25,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => TaskListModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RadioPriorityRowModel(),
         ),
       ],
       child: MaterialApp(
