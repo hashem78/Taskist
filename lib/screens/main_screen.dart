@@ -34,29 +34,23 @@ class MainScreen extends StatelessWidget {
         key: scaffoldstate,
         body: Container(
           color: kprimaryDarkColor,
-          child: Column(
-            children: [
-              Consumer<TaskListModel>(
-                builder: (_, newList, __) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: newList.tasks.length,
-                    itemBuilder: (_, idx) {
-                      return Dismissible(
-                        onDismissed: (_) {
-                          newList
-                              .removeTask(newList.tasks.toList()[idx].taskId);
-                        },
-                        key: newList.tasks.toList()[idx].taskId,
-                        child: TaskTile(
-                          title: newList.tasks.toList()[idx].taskName,
-                        ),
-                      );
+          child: Consumer<TaskListModel>(
+            builder: (_, newList, __) {
+              return ListView.builder(
+                itemCount: newList.tasks.length,
+                itemBuilder: (_, idx) {
+                  return Dismissible(
+                    onDismissed: (_) {
+                      newList.removeTask(newList.tasks.toList()[idx].taskId);
                     },
+                    key: newList.tasks.toList()[idx].taskId,
+                    child: TaskTile(
+                      title: newList.tasks.toList()[idx].taskName,
+                    ),
                   );
                 },
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
