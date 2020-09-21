@@ -19,7 +19,7 @@ class MainScreen extends StatelessWidget {
           ),
           onPressed: () {
             scaffoldstate.currentState.showBottomSheet(
-              (context) => buildBottomSheetContainer(context),
+              (_) => AddTaskScreen(),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(40),
@@ -59,9 +59,5 @@ class MainScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget buildBottomSheetContainer(BuildContext context) {
-    return AddTaskScreen();
   }
 }
