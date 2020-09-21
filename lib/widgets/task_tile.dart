@@ -11,17 +11,20 @@ class TaskTile extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        CircleAvatar(
-          backgroundColor: Colors.red,
-          child: Text(
-            title[0].toUpperCase(),
-            style: TextStyle(
-              color: kTextColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 30,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundColor: Colors.red,
+            child: Text(
+              title[0].toUpperCase(),
+              style: TextStyle(
+                color: kTextColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
             ),
+            radius: 30,
           ),
-          radius: 30,
         ),
         Expanded(
           child: Card(
