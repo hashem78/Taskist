@@ -1,11 +1,11 @@
+import 'package:Taskist/models/task_model.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
 
 class TaskTile extends StatelessWidget {
-  final String title;
-  final Color priorityColor;
+  final TaskModel model;
 
-  TaskTile({this.title, this.priorityColor});
+  TaskTile({this.model});
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -13,9 +13,36 @@ class TaskTile extends StatelessWidget {
         Radius.circular(50),
       ),
       child: Material(
-        color: priorityColor,
+        color: model.priority.color,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            showBottomSheet(
+              backgroundColor: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50),
+                  topRight: Radius.circular(50),
+                ),
+              ),
+              context: (context),
+              builder: (context) => Container(
+                height: MediaQuery.of(context).size.height / 1.3,
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(
+                        model.taskName,
+                      ),
+                      Text(
+                        model.description,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
           splashColor: Colors.grey,
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -26,7 +53,7 @@ class TaskTile extends StatelessWidget {
                 child: CircleAvatar(
                   backgroundColor: Colors.red,
                   child: Text(
-                    title[0].toUpperCase(),
+                    model.taskName[0].toUpperCase(),
                     style: TextStyle(
                       color: kTextColor,
                       fontWeight: FontWeight.bold,
@@ -40,7 +67,7 @@ class TaskTile extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    title,
+                    model.taskName,
                     maxLines: 1,
                     style: TextStyle(
                       fontSize: 40,

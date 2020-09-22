@@ -40,15 +40,15 @@ class MainScreen extends StatelessWidget {
                 itemBuilder: (_, idx) {
                   return Dismissible(
                     onDismissed: (_) {
-                      newList.removeTask(newList.tasks.toList()[idx].taskId);
+                      newList.removeTask(
+                        newList.tasks.values.toList()[idx].taskId,
+                      );
                     },
-                    key: newList.tasks.toList()[idx].taskId,
+                    key: newList.tasks.values.toList()[idx].taskId,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: TaskTile(
-                        title: newList.tasks.toList()[idx].taskName,
-                        priorityColor:
-                            newList.tasks.toList()[idx].priority.color,
+                        model: newList.tasks.values.toList()[idx],
                       ),
                     ),
                   );

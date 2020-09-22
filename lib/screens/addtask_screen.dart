@@ -130,7 +130,8 @@ class AddTaskScreen extends StatelessWidget {
                 context.read<TaskListModel>().addTask(
                       TaskModel(
                         taskName: fieldList[0].controller.text,
-                        time: fieldList[1].controller.text,
+                        description: fieldList[1].controller.text,
+                        notes: fieldList[2].controller.text,
                         priority: Provider.of<RadioPriorityRowModel>(
                           context,
                           listen: false,
