@@ -1,4 +1,5 @@
 import 'package:Taskist/constants.dart';
+import 'package:Taskist/models/daybuttons_model.dart';
 import 'package:Taskist/models/radiopriority_model.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => RadioPriorityRowModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DayButtonsModel(),
         ),
       ],
       child: MaterialApp(
