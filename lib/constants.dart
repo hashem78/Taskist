@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:Taskist/widgets/taskity_texfield.dart';
 
 const kprimaryDarkColor = const Color(0xFF455A64);
 const kprimaryLightColor = const Color(0xFFCFD8DC);
@@ -9,4 +10,27 @@ const kprimaryTextColor = const Color(0xFF212121);
 const ksecondaryTextColor = const Color(0xFF757575);
 const kdividerColor = const Color(0xFFBDBDBD);
 
+List<TaskityTextField> kfieldList = [
+  TaskityTextField(
+    title: "Name",
+    hintText: "Feed the cats!",
+  ),
+  TaskityTextField(
+    title: "Description",
+    hintText: "Describe me bby!",
+  ),
+  TaskityTextField(
+    title: "Notes",
+    hintText: "Not the salamon",
+  ),
+];
+const List<String> kdayTitles = const [
+  "S",
+  "S",
+  "M",
+  "T",
+  "W",
+  "T",
+  "F",
+];
 const kmainScreen = '/';

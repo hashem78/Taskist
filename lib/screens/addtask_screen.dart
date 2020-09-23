@@ -2,7 +2,6 @@ import 'package:Taskist/models/daybuttons_model.dart';
 import 'package:Taskist/models/radiopriority_model.dart';
 import 'package:Taskist/widgets/radiopriority_row.dart';
 import 'package:flutter/material.dart';
-import 'package:Taskist/widgets/taskity_texfield.dart';
 import 'package:Taskist/models/tasklist_model.dart';
 import 'package:Taskist/models/task_model.dart';
 import 'package:Taskist/constants.dart';
@@ -10,51 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:Taskist/widgets/taskday_button.dart';
 
 class AddTaskScreen extends StatelessWidget {
-  final List<TaskityTextField> fieldList = [
-    TaskityTextField(
-      title: "Name",
-      hintText: "Feed the cats!",
-    ),
-    TaskityTextField(
-      title: "Description",
-      hintText: "Describe me bby!",
-    ),
-    TaskityTextField(
-      title: "Notes",
-      hintText: "Not the salamon",
-    ),
-  ];
-  final List<TaskDayButton> dayList = [
-    TaskDayButton(
-      title: "S",
-      index: 0,
-    ),
-    TaskDayButton(
-      title: "S",
-      index: 1,
-    ),
-    TaskDayButton(
-      title: "M",
-      index: 2,
-    ),
-    TaskDayButton(
-      title: "T",
-      index: 3,
-    ),
-    TaskDayButton(
-      title: "W",
-      index: 4,
-    ),
-    TaskDayButton(
-      title: "T",
-      index: 5,
-    ),
-    TaskDayButton(
-      title: "F",
-      index: 6,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -82,7 +36,7 @@ class AddTaskScreen extends StatelessWidget {
                 ),
               ),
             ),
-            for (var item in fieldList) item,
+            for (var item in kfieldList) item,
             RadioPriorityRow(),
             SizedBox(
               height: 10,
@@ -103,7 +57,11 @@ class AddTaskScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    for (var item in dayList) item,
+                    for (int i = 0; i < 7; ++i)
+                      TaskDayButton(
+                        title: kdayTitles[i],
+                        index: i,
+                      ),
                   ],
                 ),
               ],
@@ -129,16 +87,14 @@ class AddTaskScreen extends StatelessWidget {
               onPressed: () {
                 context.read<TaskListModel>().addTask(
                       TaskModel(
-                        taskName: fieldList[0].controller.text,
-                        description: fieldList[1].controller.text,
-                        notes: fieldList[2].controller.text,
+                        taskName: kfieldList[0].controller.text,
+                        description: kfieldList[1].controller.text,
+                        notes: kfieldList[2].controller.text,
                         priority: Provider.of<RadioPriorityRowModel>(
                           context,
                           listen: false,
                         ).priority,
-                        repeats:
-                            Provider.of<DayButtonsModel>(context, listen: false)
-                                .repeates,
+                        repeats: [...context.read<DayButtonsModel>().repeates],
                       ),
                     );
                 Navigator.of(context).pop();

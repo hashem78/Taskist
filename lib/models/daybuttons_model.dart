@@ -7,6 +7,10 @@ class DayButtonsModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void clear() {
+    for (int i = 0; i < 7; ++i) repeates[i] = false;
+  }
+
   bool getAtIndex(int index) {
     return repeates[index];
   }

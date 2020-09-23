@@ -1,4 +1,5 @@
 import 'package:Taskist/constants.dart';
+import 'package:Taskist/models/daybuttons_model.dart';
 import 'package:Taskist/models/tasklist_model.dart';
 import 'package:Taskist/screens/addtask_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,15 +19,23 @@ class MainScreen extends StatelessWidget {
             size: 40,
           ),
           onPressed: () {
-            scaffoldstate.currentState.showBottomSheet(
-              (_) => AddTaskScreen(),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
-                ),
-              ),
-              backgroundColor: Colors.blue,
+            scaffoldstate.currentState
+                .showBottomSheet(
+                  (_) => AddTaskScreen(),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    ),
+                  ),
+                  backgroundColor: Colors.blue,
+                )
+                .closed
+                .whenComplete(
+              () {
+                context.read<DayButtonsModel>().clear();
+                for (var field in kfieldList) field.controller.clear();
+              },
             );
           },
         ),

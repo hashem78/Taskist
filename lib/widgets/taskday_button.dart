@@ -4,21 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TaskDayButton extends StatelessWidget {
-  final Function() onTap;
   final Color _activated = Colors.red;
   final Color _deactivated = Colors.grey;
   final String title;
   final int index;
-  TaskDayButton({this.onTap, this.title, this.index});
+  final bool isActive;
+  TaskDayButton({this.title, this.index}) : isActive = null;
+  TaskDayButton.noModel({this.title, this.isActive}) : index = null;
 
   @override
   Widget build(BuildContext context) {
     return ClipOval(
       child: Consumer<DayButtonsModel>(
         builder: (_, newList, __) => Material(
-          color: newList.getAtIndex(index)
-              ? _activated
-              : _deactivated, // button color
+          color: index == null
+              ? (isActive ? _activated : _deactivated)
+              : (newList.getAtIndex(index)
+                  ? _activated
+                  : _deactivated), // button color
           child: InkWell(
             splashColor: Colors.grey, // inkwell color
             child: Container(
@@ -36,7 +39,7 @@ class TaskDayButton extends StatelessWidget {
               ),
             ),
             onTap: () {
-              newList.triggerAtIndex(index);
+              if (index != null) newList.triggerAtIndex(index);
             },
           ),
         ),
