@@ -13,8 +13,19 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: kprimaryDarkColor,
+          automaticallyImplyLeading: false,
+          title: const Text(
+            "My tasks",
+            style: TextStyle(
+              fontSize: 40,
+            ),
+          ),
+        ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(
+          child: const Icon(
             Icons.add,
             size: 40,
           ),

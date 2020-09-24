@@ -1,7 +1,7 @@
 import 'package:Taskist/models/task_model.dart';
-import 'package:Taskist/widgets/taskday_button.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
+import 'package:Taskist/screens/taskdetails_screen.dart';
 
 class TaskTile extends StatelessWidget {
   final TaskModel model;
@@ -10,8 +10,8 @@ class TaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.all(
-        Radius.circular(50),
+      borderRadius: const BorderRadius.all(
+        const Radius.circular(50),
       ),
       child: Material(
         color: model.priority.color,
@@ -26,7 +26,7 @@ class TaskTile extends StatelessWidget {
                 ),
               ),
               context: (context),
-              builder: (context) => TaskDetails(model: model),
+              builder: (context) => TaskDetailsScreen(model: model),
             );
           },
           splashColor: Colors.grey,
@@ -68,55 +68,6 @@ class TaskTile extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class TaskDetails extends StatelessWidget {
-  const TaskDetails({
-    Key key,
-    @required this.model,
-  }) : super(key: key);
-
-  final TaskModel model;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height / 1.3,
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              model.taskName,
-              style: TextStyle(
-                fontSize: 60,
-                color: kTextColor,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              model.description,
-              textAlign: TextAlign.start,
-              style: TextStyle(fontSize: 25, color: kTextColor),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              for (int i = 0; i < 7; ++i)
-                TaskDayButton.noModel(
-                  title: kdayTitles[i],
-                  isActive: model.repeats[i],
-                ),
-            ],
-          )
-        ],
       ),
     );
   }

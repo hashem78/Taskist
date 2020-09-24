@@ -30,7 +30,7 @@ class TaskDayButton extends StatelessWidget {
               child: Center(
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: kTextColor,

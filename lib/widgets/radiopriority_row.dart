@@ -8,12 +8,12 @@ class RadioPriorityRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 8,
       ),
       child: Column(
         children: [
-          Text(
+          const Text(
             "Priority",
             style: TextStyle(
               color: kTextColor,

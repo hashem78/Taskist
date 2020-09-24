@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:Taskist/widgets/taskity_texfield.dart';
+import 'package:Taskist/widgets/taskist_textfield.dart';
 
 const kprimaryDarkColor = const Color(0xFF455A64);
 const kprimaryLightColor = const Color(0xFFCFD8DC);
