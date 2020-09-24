@@ -56,6 +56,7 @@ class TaskListModel extends ChangeNotifier {
 
   bool removeTask(String id) {
     if (contains(id)) {
+      print("removed $id");
       tasks.remove(id);
       notifyListeners();
       saveTasks();

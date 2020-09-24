@@ -36,6 +36,7 @@ class TaskModel {
         'description': description,
         'notes': notes,
         'repeats': repeats,
+        'taskId': taskId,
         'priority': priority.toString()
       };
 }
