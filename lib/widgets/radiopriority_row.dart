@@ -1,5 +1,5 @@
 import 'package:Taskist/constants.dart';
-import 'package:Taskist/task_priority.dart';
+import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:Taskist/models/radiopriority_model.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:Taskist/task_priority.dart';
+import 'package:Taskist/models/taskpriority_model.dart';
 
 class TaskModel {
   String time = "";

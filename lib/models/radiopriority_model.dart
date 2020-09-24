@@ -1,4 +1,4 @@
-import 'package:Taskist/task_priority.dart';
+import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:flutter/material.dart';
 
 class RadioPriorityRowModel with ChangeNotifier {
