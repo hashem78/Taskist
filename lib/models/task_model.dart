@@ -8,7 +8,7 @@ class TaskModel {
   String notes = "";
   List<bool> repeats = [];
   TaskPriority priority = LowTaskPriority("");
-  UniqueKey taskId = UniqueKey();
+  String taskId = UniqueKey().toString();
   TaskModel({
     this.time,
     this.taskName,
@@ -17,4 +17,25 @@ class TaskModel {
     this.notes,
     this.description,
   });
+
+  TaskModel.fromJson(Map<String, dynamic> json)
+      : time = json['time'],
+        taskName = json['taskName'],
+        description = json['description'],
+        notes = json['notes'],
+        repeats = List<bool>.from(json['repeats']),
+        priority = json['priority'] == "high"
+            ? HighTaskPriority("")
+            : json['priority'] == 'medium'
+                ? MediumTaskPriority("")
+                : LowTaskPriority(""),
+        taskId = json['taskId'];
+  Map<String, dynamic> toJson() => {
+        'time': time,
+        'taskName': taskName,
+        'description': description,
+        'notes': notes,
+        'repeats': repeats,
+        'priority': priority.toString()
+      };
 }

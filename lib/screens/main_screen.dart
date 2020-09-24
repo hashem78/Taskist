@@ -53,7 +53,7 @@ class MainScreen extends StatelessWidget {
                         newList.tasks.values.toList()[idx].taskId,
                       );
                     },
-                    key: newList.tasks.values.toList()[idx].taskId,
+                    key: Key(newList.tasks.values.toList()[idx].taskId),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: TaskTile(

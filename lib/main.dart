@@ -3,6 +3,8 @@ import 'package:Taskist/models/daybuttons_model.dart';
 import 'package:Taskist/models/radiopriority_model.dart';
 import 'package:flutter/material.dart';
 
+import 'package:Taskist/models/task_model.dart';
+
 import 'package:flutter/services.dart';
 import 'package:Taskist/screens/main_screen.dart';
 import 'package:provider/provider.dart';
@@ -22,30 +24,38 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => TaskListModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => RadioPriorityRowModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => DayButtonsModel(),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: kmainScreen,
-        routes: {
-          kmainScreen: (context) => MainScreen(),
-        },
-        theme: ThemeData(
-          accentColor: kaccentColor,
-          primaryColor: kprimaryColor,
-          backgroundColor: kprimaryColor,
-        ),
-      ),
+    return FutureBuilder(
+      future: TaskListModel.load(),
+      builder: (_, AsyncSnapshot<Map<String, TaskModel>> snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (_) => TaskListModel(snapshot.data),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => RadioPriorityRowModel(),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => DayButtonsModel(),
+            ),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            initialRoute: kmainScreen,
+            routes: {
+              kmainScreen: (context) => MainScreen(),
+            },
+            theme: ThemeData(
+              accentColor: kaccentColor,
+              primaryColor: kprimaryColor,
+              backgroundColor: kprimaryColor,
+            ),
+          ),
+        );
+      },
     );
   }
 }
