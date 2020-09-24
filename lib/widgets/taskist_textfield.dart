@@ -9,24 +9,25 @@ class TaskityTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(top: 10),
       child: TextField(
+        maxLines: null,
         textAlign: TextAlign.left,
         decoration: InputDecoration(
           labelText: title,
-          labelStyle: TextStyle(color: kTextColor),
+          labelStyle: const TextStyle(color: kTextColor),
           hintText: hintText,
-          hintStyle: TextStyle(color: kTextColor),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 2, color: kaccentColor),
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
+          hintStyle: const TextStyle(color: kTextColor),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: const BorderSide(width: 2, color: kaccentColor),
+            borderRadius: const BorderRadius.all(
+              const Radius.circular(10),
             ),
           ),
-          enabledBorder: OutlineInputBorder(
+          enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(width: 2, color: kaccentColor),
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
+            borderRadius: const BorderRadius.all(
+              const Radius.circular(10),
             ),
           ),
         ),
