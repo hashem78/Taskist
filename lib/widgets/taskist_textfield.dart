@@ -25,7 +25,7 @@ class TaskityTextField extends StatelessWidget {
             ),
           ),
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(width: 2, color: kaccentColor),
+            borderSide: const BorderSide(width: 2, color: kaccentColor),
             borderRadius: const BorderRadius.all(
               const Radius.circular(10),
             ),
