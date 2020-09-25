@@ -7,8 +7,11 @@ import 'package:Taskist/models/task_model.dart';
 import 'package:Taskist/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:Taskist/widgets/taskday_button.dart';
+import 'package:Taskist/singletons/notificationsprovider_singleton.dart';
 
 class AddTaskScreen extends StatelessWidget {
+  final LocalNotificationsProviderSingleton _notificationsProviderSingleton =
+      LocalNotificationsProviderSingleton();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,6 +81,7 @@ class AddTaskScreen extends StatelessWidget {
             ),
             onPressed: () {
               buildTaskModel(context);
+              _notificationsProviderSingleton.scheduleNotification();
               Navigator.of(context).pop();
             },
           ),

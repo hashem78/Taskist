@@ -10,7 +10,7 @@ import 'package:Taskist/screens/main_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:Taskist/models/tasklist_model.dart';
 
-void main() {
+void main() async {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: kprimaryDarkColor,
@@ -18,6 +18,7 @@ void main() {
       systemNavigationBarDividerColor: kprimaryLightColor,
     ),
   );
+
   runApp(MyApp());
 }
 
