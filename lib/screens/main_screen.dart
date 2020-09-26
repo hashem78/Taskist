@@ -93,6 +93,7 @@ class MainScreen extends StatelessWidget {
           child: Consumer<TaskListModel>(
             builder: (_, newList, __) {
               return ListView.builder(
+                physics: BouncingScrollPhysics(),
                 itemCount: newList.tasks.length,
                 itemBuilder: (_, idx) {
                   return Dismissible(
