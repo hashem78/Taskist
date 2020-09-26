@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: TaskListModel.load(),
-      builder: (_, AsyncSnapshot<Map<String, TaskModel>> snapshot) {
+      builder: (_, AsyncSnapshot<List<TaskModel>> snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator();
         }

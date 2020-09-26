@@ -4,6 +4,25 @@ abstract class TaskPriority {
   Color color;
   String alert;
   String toString();
+  bool operator <(TaskPriority other) {
+    if (this.toString() == "high")
+      return false;
+    else if (this.toString() == "medium") {
+      if (other.toString() == "high")
+        return true;
+      else
+        return false;
+    } else {
+      if (other.toString() == "high" || other.toString() == "medium")
+        return true;
+      else
+        return false;
+    }
+  }
+
+  bool operator >(TaskPriority other) {
+    return other < this;
+  }
 }
 
 class HighTaskPriority extends TaskPriority {

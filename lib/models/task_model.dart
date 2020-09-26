@@ -39,4 +39,11 @@ class TaskModel {
         'taskId': taskId,
         'priority': priority.toString()
       };
+  bool operator <(TaskModel other) {
+    return this.priority < other.priority;
+  }
+
+  bool operator >(TaskModel other) {
+    return other.priority < this.priority;
+  }
 }

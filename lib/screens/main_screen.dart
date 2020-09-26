@@ -14,6 +14,43 @@ class MainScreen extends StatelessWidget {
     return Material(
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            PopupMenuButton(
+              color: kprimaryDarkColor,
+              onSelected: (val) {
+                switch (val) {
+                  case 0:
+                    context.read<TaskListModel>().sortBasedOnPriority();
+                    break;
+                  case 1:
+                    context
+                        .read<TaskListModel>()
+                        .sortBasedOnPriority(order: true);
+                    break;
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 0,
+                  child: const Text(
+                    "Sort by descending order of priority",
+                    style: const TextStyle(
+                      color: kTextColor,
+                    ),
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 1,
+                  child: const Text(
+                    "Sort by Ascending order of priority",
+                    style: const TextStyle(
+                      color: kTextColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
           elevation: 0,
           backgroundColor: kprimaryDarkColor,
           automaticallyImplyLeading: false,
@@ -61,14 +98,14 @@ class MainScreen extends StatelessWidget {
                   return Dismissible(
                     onDismissed: (_) {
                       newList.removeTask(
-                        newList.tasks.values.toList()[idx].taskId,
+                        newList.tasks[idx].taskId,
                       );
                     },
-                    key: Key(newList.tasks.values.toList()[idx].taskId),
+                    key: Key(newList.tasks[idx].taskId),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: TaskTile(
-                        model: newList.tasks.values.toList()[idx],
+                        model: newList.tasks[idx],
                       ),
                     ),
                   );
