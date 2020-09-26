@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'task_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 int tasksCompareDescending(TaskModel a, TaskModel b) {
   if (a < b)
@@ -21,29 +22,60 @@ int tasksCompareAscending(TaskModel a, TaskModel b) {
 
 class TaskListModel extends ChangeNotifier {
   List<TaskModel> tasks = [];
+  bool syncWithOnline = false;
   TaskListModel(this.tasks);
+
+  void triggerSync() async {
+    if (syncWithOnline == false) {
+      syncWithOnline = true;
+      var collection =
+          await FirebaseFirestore.instance.collection('tasks').get();
+      //get the local models to the server first
+      for (var model in tasks) {
+        var alreadyInFirestore = (await FirebaseFirestore.instance
+                .collection('tasks')
+                .doc(model.taskId)
+                .get())
+            .exists;
+
+        if (!alreadyInFirestore) {
+          print("not found in firestore but in local");
+          print(model.taskId);
+          await FirebaseFirestore.instance
+              .collection('tasks')
+              .doc(model.taskId)
+              .set(
+                model.toJson(),
+                SetOptions(merge: true),
+              );
+        }
+      }
+      collection = await FirebaseFirestore.instance.collection('tasks').get();
+      tasks.clear();
+      for (var model in collection.docs) {
+        var tmodel = TaskModel.fromJson(model.data());
+        tasks.add(tmodel);
+      }
+    } else {
+      syncWithOnline = false;
+    }
+    notifyListeners();
+  }
 
   static Future<List<TaskModel>> load() async {
     List<TaskModel> tasks = [];
     var dir = await getApplicationDocumentsDirectory();
     File store = File(join(dir.path, "database.json"));
     if (store.existsSync()) {
-      print("file exists");
     } else {
       await store.writeAsString("[]");
     }
-    print("located ${store.path}");
     try {
       List<dynamic> decoded = json.decode(store.readAsStringSync());
-      print("decoded store file");
-      print("decoded is not empty");
       for (var value in decoded) {
         tasks.add(TaskModel.fromJson(value));
       }
-    } catch (e) {
-      print(e.toString());
-    }
-
+    } catch (e) {}
     return tasks;
   }
 
@@ -56,8 +88,16 @@ class TaskListModel extends ChangeNotifier {
 
   void addTask(TaskModel newTask) async {
     tasks.add(newTask);
+    print("added to local");
     notifyListeners();
     await saveTasks();
+    if (syncWithOnline) {
+      print("added to firestore");
+      FirebaseFirestore.instance.collection('tasks').doc(newTask.taskId).set(
+            newTask.toJson(),
+            SetOptions(merge: true),
+          );
+    }
   }
 
   bool contains(String id) {
@@ -65,22 +105,27 @@ class TaskListModel extends ChangeNotifier {
     return false;
   }
 
-  void remove(String id) {
+  Future<void> remove(String id) async {
     for (var task in tasks)
       if (task.taskId == id) {
         tasks.remove(task);
-        return;
+        break;
       }
+    if (syncWithOnline) {
+      try {
+        bool v =
+            (await FirebaseFirestore.instance.collection('tasks').doc(id).get())
+                .exists;
+        print("it $v exist");
+        await FirebaseFirestore.instance.collection('tasks').doc(id).delete();
+      } catch (e) {}
+    }
   }
 
-  bool removeTask(String id) {
-    if (contains(id)) {
-      remove(id);
-      notifyListeners();
-      saveTasks();
-      return true;
-    }
-    return false;
+  Future<void> removeTask(String id) async {
+    await remove(id);
+    notifyListeners();
+    await saveTasks();
   }
 
   // order = false -> descending

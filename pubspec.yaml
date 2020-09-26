@@ -16,6 +16,9 @@ dependencies:
   provider: ^4.3.2+2
   path_provider: ^1.6.18
   flutter_local_notifications: ^1.4.4+4
+  cloud_firestore: ^0.14.0+2
+  firebase_core :
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

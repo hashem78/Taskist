@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "569964051449",
+    "firebase_url": "https://taskist-de641.firebaseio.com",
+    "project_id": "taskist-de641",
+    "storage_bucket": "taskist-de641.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569964051449:android:4e123d36a6291401601b28",
+        "android_client_info": {
+          "package_name": "com.hashem.taskist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "569964051449-55ll40gf9paig418sf32s5hf2csh9tb5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtKu0oZPf8wHu2gDVQlm7B8JfL5Ga35Vg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "569964051449-55ll40gf9paig418sf32s5hf2csh9tb5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

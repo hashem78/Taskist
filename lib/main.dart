@@ -9,8 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:Taskist/screens/main_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:Taskist/models/tasklist_model.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: kprimaryDarkColor,
@@ -19,6 +21,7 @@ void main() async {
     ),
   );
 
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:Taskist/models/taskpriority_model.dart';
 
 class TaskModel {
@@ -8,7 +7,7 @@ class TaskModel {
   String notes = "";
   List<bool> repeats = [];
   TaskPriority priority = LowTaskPriority("");
-  String taskId = UniqueKey().toString();
+  String taskId;
   TaskModel({
     this.time,
     this.taskName,
@@ -16,8 +15,8 @@ class TaskModel {
     this.priority,
     this.notes,
     this.description,
+    this.taskId,
   });
-
   TaskModel.fromJson(Map<String, dynamic> json)
       : time = json['time'],
         taskName = json['taskName'],

@@ -104,6 +104,7 @@ class AddTaskScreen extends StatelessWidget {
               listen: false,
             ).priority,
             repeats: [...context.read<DayButtonsModel>().repeates],
+            taskId: UniqueKey().toString(),
           ),
         );
   }
