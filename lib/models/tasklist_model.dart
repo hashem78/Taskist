@@ -28,8 +28,6 @@ class TaskListModel extends ChangeNotifier {
   void triggerSync() async {
     if (syncWithOnline == false) {
       syncWithOnline = true;
-      var collection =
-          await FirebaseFirestore.instance.collection('tasks').get();
       //get the local models to the server first
       for (var model in tasks) {
         var alreadyInFirestore = (await FirebaseFirestore.instance
@@ -50,14 +48,15 @@ class TaskListModel extends ChangeNotifier {
               );
         }
       }
-      collection = await FirebaseFirestore.instance.collection('tasks').get();
+    } else {
+      syncWithOnline = false;
+      var collection =
+          await FirebaseFirestore.instance.collection('tasks').get();
       tasks.clear();
       for (var model in collection.docs) {
         var tmodel = TaskModel.fromJson(model.data());
         tasks.add(tmodel);
       }
-    } else {
-      syncWithOnline = false;
     }
     notifyListeners();
   }

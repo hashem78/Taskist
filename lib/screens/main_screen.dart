@@ -119,9 +119,26 @@ class MainScreen extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
       builder: (_, snapshots) {
-        if (!snapshots.hasData)
-          return Container(
-            child: Text("Loading..."),
+        if (!snapshots.hasData || snapshots.data == null) {
+          return Center(
+            child: Container(
+              color: Colors.transparent,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        if (snapshots.data.documents.length == 0)
+          return Center(
+            child: Container(
+              child: Text(
+                "No notes to fetch!",
+                style: TextStyle(
+                  fontSize: 50,
+                  color: ksecondaryTextColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
           );
         return ListView.builder(
           physics: BouncingScrollPhysics(),
@@ -129,6 +146,7 @@ class MainScreen extends StatelessWidget {
           itemBuilder: (_, idx) {
             var doc = snapshots.data.documents[idx];
             var tmodel = buildTaskModelWithSync(doc);
+
             return Dismissible(
               onDismissed: (_) async {
                 await context.read<TaskListModel>().removeTask(
