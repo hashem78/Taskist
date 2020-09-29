@@ -18,7 +18,6 @@ void main() async {
     ),
   );
   var localListModel = await TaskListModel.loadLocalTasks();
-  print(localListModel.tasks);
   await Firebase.initializeApp();
   runApp(MyApp(localListModel));
 }

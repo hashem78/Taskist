@@ -65,24 +65,22 @@ class TaskListModel extends ChangeNotifier {
     var encoded = json.encode(tmp);
     var dir = await getApplicationDocumentsDirectory();
     File store = File(join(dir.path, "database.json"));
-    await store.writeAsString(encoded, mode: FileMode.write).then(
-          (value) => print('saved database'),
-        );
+    await store.writeAsString(encoded, mode: FileMode.write);
   }
 
   void addTask(TaskModel newTask) {
-    print(tasks);
     FirebaseFirestore.instance
         .collection('tasks')
-        .add(newTask.toJson())
-        .then((value) => print('done inserting to firebase'));
+        .doc(newTask.taskId)
+        .set(newTask.toJson());
+
     if (!tasks.containsKey(newTask.taskId)) {
       tasks[newTask.taskId] = newTask;
       animatedListKey.currentState.insertItem(
         tasks.length - 1,
         duration: Duration(milliseconds: 300 + 200 * tasks.length),
       );
-      saveTasks().then((value) => print('done save to local'));
+      saveTasks();
       notifyListeners();
     }
   }
