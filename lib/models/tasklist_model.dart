@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'task_model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,119 +23,85 @@ int tasksCompareAscending(TaskModel a, TaskModel b) {
 }
 
 class TaskListModel extends ChangeNotifier {
-  List<TaskModel> tasks = [];
+  GlobalKey<AnimatedListState> animatedListKey = GlobalKey();
+
+  LinkedHashMap<String, TaskModel> tasks = LinkedHashMap();
   bool syncWithOnline = false;
-  TaskListModel(this.tasks);
+  TaskListModel._();
 
-  void triggerSync() async {
-    if (syncWithOnline == false) {
-      syncWithOnline = true;
-      //get the local models to the server first
-      for (var model in tasks) {
-        var alreadyInFirestore = (await FirebaseFirestore.instance
-                .collection('tasks')
-                .doc(model.taskId)
-                .get())
-            .exists;
+  static Future<TaskListModel> loadLocalTasks() async {
+    var listModel = TaskListModel._();
 
-        if (!alreadyInFirestore) {
-          print("not found in firestore but in local");
-          print(model.taskId);
-          await FirebaseFirestore.instance
-              .collection('tasks')
-              .doc(model.taskId)
-              .set(
-                model.toJson(),
-                SetOptions(merge: true),
-              );
-        }
-      }
-    } else {
-      syncWithOnline = false;
-      var collection =
-          await FirebaseFirestore.instance.collection('tasks').get();
-      tasks.clear();
-      for (var model in collection.docs) {
-        var tmodel = TaskModel.fromJson(model.data());
-        tasks.add(tmodel);
-      }
-    }
-    notifyListeners();
-  }
-
-  static Future<List<TaskModel>> load() async {
-    List<TaskModel> tasks = [];
     var dir = await getApplicationDocumentsDirectory();
     File store = File(join(dir.path, "database.json"));
-    if (store.existsSync()) {
-    } else {
-      await store.writeAsString("[]");
+    if (!store.existsSync()) {
+      await store.writeAsString("{}");
     }
-    try {
-      List<dynamic> decoded = json.decode(store.readAsStringSync());
-      for (var value in decoded) {
-        tasks.add(TaskModel.fromJson(value));
-      }
-    } catch (e) {}
-    return tasks;
+
+    Map<String, dynamic> decoded = await json.decode(store.readAsStringSync());
+    listModel.tasks.clear();
+    decoded.forEach((key, value) {
+      listModel.tasks[key] = TaskModel.fromJson(value);
+    });
+
+    return listModel;
+  }
+
+  Future<void> getOnlineTasks() async {
+    clear();
+    var collection = await FirebaseFirestore.instance.collection('tasks').get();
+    var docs = collection.docs.map(
+      (e) => TaskModel.fromJson(e.data()),
+    );
+    docs.forEach((element) {
+      addTask(element);
+    });
   }
 
   Future<void> saveTasks() async {
-    var encoded = json.encode(tasks);
+    Map<String, dynamic> tmp = Map();
+    tasks.forEach((key, value) => tmp[key] = value);
+
+    var encoded = json.encode(tmp);
     var dir = await getApplicationDocumentsDirectory();
     File store = File(join(dir.path, "database.json"));
-    await store.writeAsString(encoded, mode: FileMode.write);
+    await store.writeAsString(encoded, mode: FileMode.write).then(
+          (value) => print('saved database'),
+        );
   }
 
-  void addTask(TaskModel newTask) async {
-    tasks.add(newTask);
-    print("added to local");
-    notifyListeners();
-    await saveTasks();
-    if (syncWithOnline) {
-      print("added to firestore");
-      FirebaseFirestore.instance.collection('tasks').doc(newTask.taskId).set(
-            newTask.toJson(),
-            SetOptions(merge: true),
-          );
+  void addTask(TaskModel newTask) {
+    print(tasks);
+    FirebaseFirestore.instance
+        .collection('tasks')
+        .add(newTask.toJson())
+        .then((value) => print('done inserting to firebase'));
+    if (!tasks.containsKey(newTask.taskId)) {
+      tasks[newTask.taskId] = newTask;
+      animatedListKey.currentState.insertItem(
+        tasks.length - 1,
+        duration: Duration(milliseconds: 300 + 200 * tasks.length),
+      );
+      saveTasks().then((value) => print('done save to local'));
+      notifyListeners();
     }
   }
 
   bool contains(String id) {
-    for (var task in tasks) if (task.taskId == id) return true;
+    for (var task in tasks.values) if (task.taskId == id) return true;
     return false;
   }
 
-  Future<void> remove(String id) async {
-    for (var task in tasks)
-      if (task.taskId == id) {
-        tasks.remove(task);
-        break;
-      }
-    if (syncWithOnline) {
-      try {
-        bool v =
-            (await FirebaseFirestore.instance.collection('tasks').doc(id).get())
-                .exists;
-        print("it $v exist");
-        await FirebaseFirestore.instance.collection('tasks').doc(id).delete();
-      } catch (e) {}
-    }
+  void clear() async {
+    tasks.clear();
+    animatedListKey = GlobalKey();
+    notifyListeners();
   }
 
-  Future<void> removeTask(String id) async {
-    await remove(id);
+  void removeTask(String id) async {
+    tasks.remove(id);
+    animatedListKey = GlobalKey();
     notifyListeners();
     await saveTasks();
-  }
-
-  // order = false -> descending
-  // order = true -> ascending
-  void sortBasedOnPriority({bool order = false}) {
-    if (!order)
-      tasks.sort(tasksCompareDescending);
-    else
-      tasks.sort(tasksCompareAscending);
-    notifyListeners();
   }
 }

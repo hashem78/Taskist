@@ -10,6 +10,41 @@ const kprimaryTextColor = const Color(0xFF212121);
 const ksecondaryTextColor = const Color(0xFFD3D3D3);
 const kdividerColor = const Color(0xFFBDBDBD);
 
+const kappTitle = const Text(
+  "Taskist",
+  style: const TextStyle(
+    fontSize: 40,
+  ),
+);
+var kpopupMenuItems = [
+  const PopupMenuItem(
+    value: 0,
+    child: const Text(
+      "Sort by descending order of priority",
+      style: const TextStyle(
+        color: kTextColor,
+      ),
+    ),
+  ),
+  const PopupMenuItem(
+    value: 1,
+    child: const Text(
+      "Sort by Ascending order of priority",
+      style: const TextStyle(
+        color: kTextColor,
+      ),
+    ),
+  ),
+  const PopupMenuItem(
+    value: 2,
+    child: const Text(
+      "Sync",
+      style: const TextStyle(
+        color: kTextColor,
+      ),
+    ),
+  ),
+];
 List<TaskityTextField> kfieldList = [
   TaskityTextField(
     title: "Name",

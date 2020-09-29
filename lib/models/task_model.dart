@@ -45,4 +45,12 @@ class TaskModel {
   bool operator >(TaskModel other) {
     return other.priority < this.priority;
   }
+
+  int get hashCode => int.tryParse(taskId);
+  bool operator ==(Object other) {
+    if (other is TaskModel) {
+      return taskId == other.taskId;
+    }
+    return false;
+  }
 }

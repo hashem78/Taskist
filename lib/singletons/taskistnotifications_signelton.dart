@@ -1,23 +1,28 @@
+import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class LocalNotificationsProviderSingleton {
-  Future<void> scheduleNotification() async {
+class TaskistNotifications {
+  Future<void> scheduleNotification(String title, TaskPriority priority) async {
     var scheduledNotificationDateTime =
         DateTime.now().add(Duration(seconds: 5));
+    var tm = DateTime.now().toString();
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'channel id',
-      'channel name',
-      'channel description',
+      tm,
+      'taskist_notification-$tm',
+      'Incoming!',
       icon: 'ic_launcher',
       largeIcon: DrawableResourceAndroidBitmap('ic_launcher'),
+      priority: (priority is LowTaskPriority)
+          ? Priority.Low
+          : (priority is MediumTaskPriority) ? Priority.High : Priority.Max,
     );
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
       0,
-      'scheduled title',
-      'scheduled body',
+      title,
+      'priority: $priority',
       scheduledNotificationDateTime,
       platformChannelSpecifics,
       androidAllowWhileIdle: true,
@@ -38,12 +43,12 @@ class LocalNotificationsProviderSingleton {
     );
   }
 
-  static final LocalNotificationsProviderSingleton _localNotificationsProvider =
-      LocalNotificationsProviderSingleton._internal();
+  static final TaskistNotifications _localNotificationsProvider =
+      TaskistNotifications._internal();
 
-  factory LocalNotificationsProviderSingleton() {
+  factory TaskistNotifications() {
     _initNotifications();
     return _localNotificationsProvider;
   }
-  LocalNotificationsProviderSingleton._internal();
+  TaskistNotifications._internal();
 }

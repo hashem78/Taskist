@@ -7,11 +7,8 @@ import 'package:Taskist/models/task_model.dart';
 import 'package:Taskist/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:Taskist/widgets/taskday_button.dart';
-import 'package:Taskist/singletons/notificationsprovider_singleton.dart';
 
 class AddTaskScreen extends StatelessWidget {
-  final LocalNotificationsProviderSingleton _notificationsProviderSingleton =
-      LocalNotificationsProviderSingleton();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -83,7 +80,6 @@ class AddTaskScreen extends StatelessWidget {
               ),
               onPressed: () {
                 buildTaskModel(context);
-                _notificationsProviderSingleton.scheduleNotification();
                 Navigator.of(context).pop();
               },
             ),
@@ -94,6 +90,7 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   void buildTaskModel(BuildContext context) {
+    // TODO: notification on time
     return context.read<TaskListModel>().addTask(
           TaskModel(
             taskName: kfieldList[0].controller.text,
@@ -104,7 +101,7 @@ class AddTaskScreen extends StatelessWidget {
               listen: false,
             ).priority,
             repeats: [...context.read<DayButtonsModel>().repeates],
-            taskId: UniqueKey().toString(),
+            taskId: UniqueKey().toString().replaceAll(RegExp(r'(\[|\]|#)'), ''),
           ),
         );
   }
