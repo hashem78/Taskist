@@ -40,11 +40,11 @@ class AddTaskScreen extends StatelessWidget {
             RadioPriorityRow(),
             Column(
               children: [
-                Padding(
+                const Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: const Text(
                     "Repeat on",
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: kTextColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -63,10 +63,15 @@ class AddTaskScreen extends StatelessWidget {
                 ),
               ],
             ),
-            RaisedButton(
-              color: kprimaryDarkColor,
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: kprimaryDarkColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: const Text(
                   "Add Task",
                   style: const TextStyle(
@@ -75,12 +80,9 @@ class AddTaskScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
               onPressed: () {
                 buildTaskModel(context);
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
             ),
           ],
@@ -96,7 +98,7 @@ class AddTaskScreen extends StatelessWidget {
             taskName: kfieldList[0].controller.text,
             description: kfieldList[1].controller.text,
             notes: kfieldList[2].controller.text,
-            priority: Provider.of<RadioPriorityRowModel>(
+            predicate: Provider.of<RadioPriorityRowModel>(
               context,
               listen: false,
             ).priority,

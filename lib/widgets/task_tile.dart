@@ -11,64 +11,65 @@ class TaskTile extends StatelessWidget {
   TaskTile({this.model});
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(model.taskId),
-      onDismissed: (_) {
-        Provider.of<TaskListModel>(context, listen: false)
-            .removeTask(model.taskId);
-      },
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(
-          const Radius.circular(50),
-        ),
-        child: Material(
-          color: model.priority.color,
-          child: InkWell(
-            onTap: () {
-              showBottomSheet(
-                backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
-                  ),
-                ),
-                context: (context),
-                builder: (context) => TaskDetailsScreen(model: model),
-              );
-            },
-            splashColor: Colors.grey,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.red,
-                    child: Text(
-                      model.taskName[0].toUpperCase(),
-                      style: TextStyle(
-                        color: kTextColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
+    return Padding(
+      padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+      child: Dismissible(
+        key: Key(model.taskId),
+        onDismissed: (_) =>
+            context.read<TaskListModel>().removeTask(model.taskId),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(
+              const Radius.circular(60),
+            ),
+            child: Material(
+              color: model.predicate.color,
+              child: InkWell(
+                onTap: () {
+                  showBottomSheet(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: const Radius.circular(50),
+                        topRight: const Radius.circular(50),
                       ),
                     ),
-                    radius: 30,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      model.taskName,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w300,
+                    context: (context),
+                    builder: (context) => TaskDetailsScreen(model: model),
+                  );
+                },
+                splashColor: Colors.grey,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.red,
+                        child: Text(
+                          model.taskName[0].toUpperCase(),
+                          style: const TextStyle(
+                            color: kTextColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                          ),
+                        ),
+                        radius: 30,
                       ),
                     ),
-                  ),
+                    Expanded(
+                      child: Text(
+                        model.taskName,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

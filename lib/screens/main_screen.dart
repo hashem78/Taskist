@@ -1,16 +1,31 @@
+import 'dart:math';
+
 import 'package:Taskist/models/daybuttons_model.dart';
 import 'package:Taskist/models/tasklist_model.dart';
+import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:Taskist/widgets/animated_tasktile.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
 import 'package:Taskist/screens/addtask_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:Taskist/widgets/animated_widget_block.dart';
 
 GlobalKey<ScaffoldState> mainScreenScafoldState = GlobalKey();
 
 class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var dataList = List.generate(
+      context.watch<TaskListModel>().tasks.length,
+      (index) {
+        return AnimatedTaskTile(
+          animationDuration: Duration(
+            milliseconds: 200 + 100 * Random().nextInt(5),
+          ),
+          model: context.watch<TaskListModel>().tasks.values.toList()[index],
+        );
+      },
+    );
     return Scaffold(
       key: mainScreenScafoldState,
       floatingActionButton: buildAddTaskButton(context),
@@ -23,34 +38,23 @@ class MainScreen extends StatelessWidget {
       body: Container(
         color: kprimaryDarkColor,
         child: RefreshIndicator(
-          displacement: 10,
-          onRefresh: () {
-            context.read<TaskListModel>().getOnlineTasks();
-            return Future.delayed(
-              Duration(seconds: 1),
-            );
-          },
-          child: AnimatedList(
-            key: context.watch<TaskListModel>().animatedListKey,
-            initialItemCount: context.watch<TaskListModel>().tasks.length,
+          onRefresh: () => context.read<TaskListModel>().getOnlineTasks(),
+          child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (_, index, animation) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: AnimatedTaskTile(
-                  model: context
-                      .read<TaskListModel>()
-                      .tasks
-                      .values
-                      .toList()[index],
-                  animation:
-                      Tween<Offset>(begin: Offset(-1, 0), end: Offset.zero)
-                          .animate(
-                    animation,
-                  ),
-                ),
-              );
-            },
+            children: [
+              AnimatedWidgetBlock<HighTaskPriorityPredicate>(
+                title: "HIGH PRIORITY",
+                children: dataList,
+              ),
+              AnimatedWidgetBlock<LowTaskPriorityPredicate>(
+                title: "LOW   PRIORITY",
+                children: dataList,
+              ),
+              AnimatedWidgetBlock<MediumTaskPriorityPredicate>(
+                title: "MEDIUM PRIORITY",
+                children: dataList,
+              ),
+            ],
           ),
         ),
       ),
@@ -60,7 +64,7 @@ class MainScreen extends StatelessWidget {
 
 Widget buildAddTaskButton(BuildContext context) {
   return FloatingActionButton(
-    child: Icon(
+    child: const Icon(
       Icons.add,
       color: kTextColor,
       size: 40,
@@ -69,10 +73,10 @@ Widget buildAddTaskButton(BuildContext context) {
       mainScreenScafoldState.currentState
           .showBottomSheet(
             (_) => AddTaskScreen(),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
+            shape: const RoundedRectangleBorder(
+              borderRadius: const BorderRadius.only(
+                topLeft: const Radius.circular(50),
+                topRight: const Radius.circular(50),
               ),
             ),
             backgroundColor: Colors.blue,
@@ -81,9 +85,11 @@ Widget buildAddTaskButton(BuildContext context) {
           .whenComplete(
         () {
           Provider.of<DayButtonsModel>(context, listen: false).clear();
-          kfieldList.forEach((element) {
-            element.controller.clear();
-          });
+          kfieldList.forEach(
+            (element) {
+              element.controller.clear();
+            },
+          );
         },
       );
     },

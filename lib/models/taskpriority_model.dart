@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-abstract class TaskPriority {
+abstract class TaskPriorityPredicate {
   Color color;
-  String alert;
+
+  static String stringRep;
   String toString();
-  bool operator <(TaskPriority other) {
+  bool operator <(TaskPriorityPredicate other) {
     if (this.toString() == "high")
       return false;
     else if (this.toString() == "medium") {
@@ -20,15 +21,14 @@ abstract class TaskPriority {
     }
   }
 
-  bool operator >(TaskPriority other) {
+  bool operator >(TaskPriorityPredicate other) {
     return other < this;
   }
 }
 
-class HighTaskPriority extends TaskPriority {
-  HighTaskPriority(String alert) {
+class HighTaskPriorityPredicate extends TaskPriorityPredicate {
+  HighTaskPriorityPredicate({String alert}) {
     super.color = Colors.redAccent;
-    super.alert = alert;
   }
   @override
   String toString() {
@@ -36,10 +36,9 @@ class HighTaskPriority extends TaskPriority {
   }
 }
 
-class MediumTaskPriority extends TaskPriority {
-  MediumTaskPriority(String alert) {
+class MediumTaskPriorityPredicate extends TaskPriorityPredicate {
+  MediumTaskPriorityPredicate({String alert}) {
     super.color = Colors.amberAccent;
-    super.alert = alert;
   }
   @override
   String toString() {
@@ -47,10 +46,9 @@ class MediumTaskPriority extends TaskPriority {
   }
 }
 
-class LowTaskPriority extends TaskPriority {
-  LowTaskPriority(String alert) {
+class LowTaskPriorityPredicate extends TaskPriorityPredicate {
+  LowTaskPriorityPredicate({String alert}) {
     super.color = Colors.greenAccent;
-    super.alert = alert;
   }
   @override
   String toString() {

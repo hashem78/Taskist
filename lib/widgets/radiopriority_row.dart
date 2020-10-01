@@ -1,8 +1,7 @@
 import 'package:Taskist/constants.dart';
 import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:Taskist/models/radiopriority_model.dart';
+import 'package:Taskist/widgets/taskist_radio.dart';
 
 class RadioPriorityRow extends StatelessWidget {
   @override
@@ -15,7 +14,7 @@ class RadioPriorityRow extends StatelessWidget {
         children: [
           const Text(
             "Priority",
-            style: TextStyle(
+            style: const TextStyle(
               color: kTextColor,
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -25,47 +24,18 @@ class RadioPriorityRow extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TaskistRadio(
-                HighTaskPriority(""),
+                HighTaskPriorityPredicate(),
                 "High",
               ),
               TaskistRadio(
-                MediumTaskPriority(""),
+                MediumTaskPriorityPredicate(),
                 "Medium",
               ),
               TaskistRadio(
-                LowTaskPriority(""),
+                LowTaskPriorityPredicate(),
                 "Low",
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TaskistRadio extends StatelessWidget {
-  final TaskPriority taskPriority;
-  final String title;
-  TaskistRadio(this.taskPriority, this.title);
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<RadioPriorityRowModel>(
-      builder: (_, newPriority, __) => Column(
-        children: [
-          Radio(
-            activeColor: taskPriority.color,
-            value: taskPriority,
-            groupValue: newPriority.priority,
-            onChanged: (val) => newPriority.changePriority(val),
-          ),
-          Text(
-            title,
-            style: TextStyle(
-              color: taskPriority.color,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
           ),
         ],
       ),

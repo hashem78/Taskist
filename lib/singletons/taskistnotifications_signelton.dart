@@ -2,9 +2,10 @@ import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class TaskistNotifications {
-  Future<void> scheduleNotification(String title, TaskPriority priority) async {
+  Future<void> scheduleNotification(
+      String title, TaskPriorityPredicate priority) async {
     var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: 5));
+        DateTime.now().add(const Duration(seconds: 5));
     var tm = DateTime.now().toString();
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       tm,
@@ -12,9 +13,11 @@ class TaskistNotifications {
       'Incoming!',
       icon: 'ic_launcher',
       largeIcon: DrawableResourceAndroidBitmap('ic_launcher'),
-      priority: (priority is LowTaskPriority)
+      priority: (priority is LowTaskPriorityPredicate)
           ? Priority.Low
-          : (priority is MediumTaskPriority) ? Priority.High : Priority.Max,
+          : (priority is MediumTaskPriorityPredicate)
+              ? Priority.High
+              : Priority.Max,
     );
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(

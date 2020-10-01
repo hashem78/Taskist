@@ -22,8 +22,6 @@ int tasksCompareAscending(TaskModel a, TaskModel b) {
 }
 
 class TaskListModel extends ChangeNotifier {
-  GlobalKey<AnimatedListState> animatedListKey = GlobalKey();
-
   LinkedHashMap<String, TaskModel> tasks = LinkedHashMap();
   bool syncWithOnline = false;
   TaskListModel._();
@@ -75,10 +73,6 @@ class TaskListModel extends ChangeNotifier {
 
     if (!tasks.containsKey(newTask.taskId)) {
       tasks[newTask.taskId] = newTask;
-      animatedListKey.currentState.insertItem(
-        tasks.length - 1,
-        duration: Duration(milliseconds: 300 + 200 * tasks.length),
-      );
       saveTasks();
       notifyListeners();
     }
@@ -91,14 +85,11 @@ class TaskListModel extends ChangeNotifier {
 
   void clear() async {
     tasks.clear();
-    animatedListKey = GlobalKey();
     notifyListeners();
   }
 
-  void removeTask(String id) async {
+  void removeTask(String id) {
     tasks.remove(id);
-    animatedListKey = GlobalKey();
-    notifyListeners();
-    await saveTasks();
+    saveTasks();
   }
 }

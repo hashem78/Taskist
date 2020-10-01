@@ -6,13 +6,13 @@ class TaskModel {
   String description = "";
   String notes = "";
   List<bool> repeats = [];
-  TaskPriority priority = LowTaskPriority("");
+  TaskPriorityPredicate predicate = LowTaskPriorityPredicate();
   String taskId;
   TaskModel({
     this.time,
     this.taskName,
     this.repeats,
-    this.priority,
+    this.predicate,
     this.notes,
     this.description,
     this.taskId,
@@ -23,11 +23,11 @@ class TaskModel {
         description = json['description'],
         notes = json['notes'],
         repeats = List<bool>.from(json['repeats']),
-        priority = json['priority'] == "high"
-            ? HighTaskPriority("")
-            : json['priority'] == 'medium'
-                ? MediumTaskPriority("")
-                : LowTaskPriority(""),
+        predicate = json['predicate'] == "high"
+            ? HighTaskPriorityPredicate()
+            : json['predicate'] == 'medium'
+                ? MediumTaskPriorityPredicate()
+                : LowTaskPriorityPredicate(),
         taskId = json['taskId'];
   Map<String, dynamic> toJson() => {
         'time': time,
@@ -36,14 +36,14 @@ class TaskModel {
         'notes': notes,
         'repeats': repeats,
         'taskId': taskId,
-        'priority': priority.toString()
+        'predicate': predicate.toString()
       };
   bool operator <(TaskModel other) {
-    return this.priority < other.priority;
+    return this.predicate < other.predicate;
   }
 
   bool operator >(TaskModel other) {
-    return other.priority < this.priority;
+    return other.predicate < this.predicate;
   }
 
   int get hashCode => int.tryParse(taskId);
