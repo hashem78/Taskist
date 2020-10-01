@@ -31,13 +31,16 @@ class WidgetBlock<E> extends StatelessWidget {
               ),
               child: Wrap(
                 children: [
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 50,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.lightBlueAccent,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 50,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.lightBlueAccent,
+                      ),
                     ),
                   ),
                   ValueListenableBuilder<bool>(
