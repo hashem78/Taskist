@@ -69,3 +69,4 @@ const List<String> kdayTitles = const [
   "F",
 ];
 const kmainScreen = '/';
+const ksortedTasksScreen = '/sorted';

@@ -4,11 +4,16 @@ import 'package:Taskist/widgets/widget_block.dart';
 class AnimatedWidgetBlock<E> extends StatefulWidget {
   final List<dynamic> children;
   final WidgetBlock<E> wblock;
+  final Function(BuildContext, dynamic) onChildDismissed;
   final String title;
-  AnimatedWidgetBlock({@required this.children, this.title})
-      : wblock = WidgetBlock<E>(
+  AnimatedWidgetBlock({
+    @required this.children,
+    this.title,
+    this.onChildDismissed,
+  }) : wblock = WidgetBlock<E>(
           children: children,
           title: title,
+          onChildDismissed: onChildDismissed,
         );
   @override
   _AnimatedWidgetBlockState createState() => _AnimatedWidgetBlockState();
@@ -30,7 +35,6 @@ class _AnimatedWidgetBlockState extends State<AnimatedWidgetBlock>
 
   @override
   Widget build(BuildContext context) {
-    //print("rebuilt");
     return AnimatedBuilder(
       animation: animationController,
       child: widget.wblock,

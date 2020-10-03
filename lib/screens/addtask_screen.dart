@@ -1,6 +1,6 @@
 import 'package:Taskist/models/daybuttons_model.dart';
 import 'package:Taskist/models/radiopriority_model.dart';
-import 'package:Taskist/widgets/radiopriority_row.dart';
+import 'package:Taskist/components/radiopriority_row.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/models/tasklist_model.dart';
 import 'package:Taskist/models/task_model.dart';

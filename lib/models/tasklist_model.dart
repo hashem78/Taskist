@@ -45,7 +45,7 @@ class TaskListModel extends ChangeNotifier {
   }
 
   Future<void> getOnlineTasks() async {
-    clear();
+    tasks.clear();
     var collection = await FirebaseFirestore.instance.collection('tasks').get();
     var docs = collection.docs.map(
       (e) => TaskModel.fromJson(e.data()),
@@ -53,6 +53,14 @@ class TaskListModel extends ChangeNotifier {
     docs.forEach((element) {
       addTask(element);
     });
+  }
+
+  void addAll(List<TaskModel> list) {
+    list.forEach((element) {
+      tasks[element.taskId] = element;
+    });
+    notifyListeners();
+    saveTasks();
   }
 
   Future<void> saveTasks() async {
@@ -74,7 +82,7 @@ class TaskListModel extends ChangeNotifier {
     if (!tasks.containsKey(newTask.taskId)) {
       tasks[newTask.taskId] = newTask;
       saveTasks();
-      notifyListeners();
+      //notifyListeners();
     }
   }
 
@@ -83,13 +91,10 @@ class TaskListModel extends ChangeNotifier {
     return false;
   }
 
-  void clear() async {
-    tasks.clear();
-    notifyListeners();
-  }
-
-  void removeTask(String id) {
+  void removeTask(String id, {bool notify = true}) {
     tasks.remove(id);
+    FirebaseFirestore.instance.collection('tasks').doc(id).delete();
+    if (notify) notifyListeners();
     saveTasks();
   }
 }
