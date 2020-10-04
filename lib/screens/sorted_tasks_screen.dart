@@ -69,6 +69,15 @@ class AnimatedWidgetBlockList extends StatelessWidget {
               .removeTask(child.model.taskId, notify: false);
         },
       ),
+      AnimatedWidgetBlock<NoPriorityPredicate>(
+        title: "NO     PRIORITY",
+        children: _dataList,
+        onChildDismissed: (context, child) {
+          context
+              .read<TaskListModel>()
+              .removeTask(child.model.taskId, notify: false);
+        },
+      ),
     ];
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),

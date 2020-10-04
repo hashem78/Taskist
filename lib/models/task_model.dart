@@ -27,7 +27,9 @@ class TaskModel {
             ? HighTaskPriorityPredicate()
             : json['predicate'] == 'medium'
                 ? MediumTaskPriorityPredicate()
-                : LowTaskPriorityPredicate(),
+                : json['predicate'] == 'low'
+                    ? LowTaskPriorityPredicate()
+                    : NoPriorityPredicate(),
         taskId = json['taskId'];
   Map<String, dynamic> toJson() => {
         'time': time,

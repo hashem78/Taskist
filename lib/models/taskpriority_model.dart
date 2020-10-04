@@ -55,3 +55,13 @@ class LowTaskPriorityPredicate extends TaskPriorityPredicate {
     return "low";
   }
 }
+
+class NoPriorityPredicate extends TaskPriorityPredicate {
+  NoPriorityPredicate({String alert}) {
+    super.color = Colors.grey;
+  }
+  @override
+  String toString() {
+    return "no";
+  }
+}

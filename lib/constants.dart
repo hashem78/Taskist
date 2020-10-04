@@ -48,7 +48,12 @@ var kpopupMenuItems = [
 List<TaskityTextField> kfieldList = [
   TaskityTextField(
     title: "Name",
+    keyboardType: TextInputType.name,
+    validator: (text) {
+      if (text.length == 0) return "Name has to be atleast 1 character long";
+    },
     hintText: "Feed the cats!",
+    textInputAction: TextInputAction.done,
   ),
   TaskityTextField(
     title: "Description",
