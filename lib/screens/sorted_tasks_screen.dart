@@ -7,13 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:Taskist/components/animated_widget_block.dart';
-import 'package:Taskist/components/add_task_fab.dart';
 
 class SortedTasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: AddTaskFAB(),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: kprimaryDarkColor,
@@ -30,7 +28,7 @@ class SortedTasksScreen extends StatelessWidget {
 class AnimatedWidgetBlockList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var _taskList = context.watch<TaskListModel>().tasks;
+    var _taskList = Provider.of<TaskListModel>(context, listen: true).tasks;
     var _dataList = _taskList.values
         .map(
           (e) => AnimatedTaskTile(
@@ -66,19 +64,15 @@ class AnimatedWidgetBlockList extends StatelessWidget {
         title: "LOW PRIORITY",
         children: _dataList,
         onChildDismissed: (context, child) {
-          context.read<TaskListModel>().removeTask(
-                child.model.taskId,
-                notify: false,
-              );
+          context
+              .read<TaskListModel>()
+              .removeTask(child.model.taskId, notify: false);
         },
       ),
     ];
-    return RefreshIndicator(
-      onRefresh: () => context.read<TaskListModel>().getOnlineTasks(),
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: _blockList,
-      ),
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: _blockList,
     );
   }
 }

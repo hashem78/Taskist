@@ -28,6 +28,7 @@ class AddTaskFAB extends StatelessWidget {
             .closed
             .whenComplete(
           () {
+            //Provider.of<TaskListModel>(context, listen: false).rebuild();
             Provider.of<DayButtonsModel>(context, listen: false).clear();
             kfieldList.forEach(
               (element) {

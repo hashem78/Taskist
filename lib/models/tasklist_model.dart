@@ -73,17 +73,16 @@ class TaskListModel extends ChangeNotifier {
     await store.writeAsString(encoded, mode: FileMode.write);
   }
 
-  void addTask(TaskModel newTask) {
-    FirebaseFirestore.instance
-        .collection('tasks')
-        .doc(newTask.taskId)
-        .set(newTask.toJson());
-
+  void addTask(TaskModel newTask, {bool notify = false}) {
     if (!tasks.containsKey(newTask.taskId)) {
       tasks[newTask.taskId] = newTask;
       saveTasks();
-      //notifyListeners();
+      if (notify) notifyListeners();
     }
+  }
+
+  void rebuild() {
+    notifyListeners();
   }
 
   bool contains(String id) {
@@ -91,7 +90,7 @@ class TaskListModel extends ChangeNotifier {
     return false;
   }
 
-  void removeTask(String id, {bool notify = true}) {
+  void removeTask(String id, {bool notify = false}) {
     tasks.remove(id);
     FirebaseFirestore.instance.collection('tasks').doc(id).delete();
     if (notify) notifyListeners();

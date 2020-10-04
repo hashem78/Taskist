@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:Taskist/constants.dart';
 import 'package:Taskist/models/daybuttons_model.dart';
 import 'package:Taskist/models/radiopriority_model.dart';
@@ -12,6 +14,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+import 'components/animated_widget_block.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,11 +80,9 @@ class MainScreen extends StatelessWidget {
             onSelected: (selected) {
               switch (selected) {
                 case 0:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SortedTasksScreen(),
-                    ),
+                  context.read<TaskListModel>().rebuild();
+                  Navigator.pushNamed(context, ksortedTasksScreen).whenComplete(
+                    () => context.read<TaskListModel>().rebuild(),
                   );
                   break;
               }
@@ -114,35 +116,26 @@ class MainScreen extends StatelessWidget {
 class LocalTaskList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Local",
-          style: TextStyle(color: Colors.lightBlueAccent, fontSize: 40),
-        ),
-        Consumer<TaskListModel>(
-          builder: (_, taskList, __) {
-            return ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: taskList.tasks.length,
-              itemBuilder: (___, index) {
-                var model = taskList.tasks.values.toList()[index];
-                return Dismissible(
-                  onDismissed: (_) =>
-                      taskList.removeTask(model.taskId, notify: false),
-                  key: UniqueKey(),
-                  child: AnimatedTaskTile(
-                    model: model,
-                    animationDuration: Duration(milliseconds: 200),
-                  ),
-                );
-              },
+    var _taskList = Provider.of<TaskListModel>(context).tasks;
+    var _dataList = _taskList.values
+        .map(
+          (e) => AnimatedTaskTile(
+            model: e,
+            animationDuration: Duration(
+              milliseconds: 200 + 100 * Random().nextInt(10),
+            ),
+          ),
+        )
+        .toList();
+    return AnimatedWidgetBlock(
+      title: "Local",
+      children: _dataList,
+      onChildDismissed: (context, child) {
+        context.read<TaskListModel>().removeTask(
+              child.model.taskId,
+              notify: false,
             );
-          },
-        ),
-      ],
+      },
     );
   }
 }
@@ -154,7 +147,6 @@ class TaskStreamBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("here");
     var taskList = Provider.of<TaskListModel>(context);
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
@@ -174,23 +166,22 @@ class TaskStreamBuilder extends StatelessWidget {
               Divider(
                 thickness: 1,
               ),
-              Text(
-                "Online",
-                style: TextStyle(
-                  fontSize: 40,
-                  color: Colors.lightBlueAccent,
-                ),
-              ),
-              ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: actualList.length,
-                itemBuilder: (_, index) {
-                  return AnimatedTaskTile(
-                    model: actualList[index],
-                    animationDuration: Duration(milliseconds: 200),
-                  );
-                },
+              AnimatedWidgetBlock(
+                title: "Online",
+                onChildDismissed: (context, child) => FirebaseFirestore.instance
+                    .collection('tasks')
+                    .doc(child.model.taskId)
+                    .delete(),
+                children: actualList
+                    .map(
+                      (e) => AnimatedTaskTile(
+                        model: e,
+                        animationDuration: Duration(
+                          milliseconds: 200,
+                        ),
+                      ),
+                    )
+                    .toList(),
               ),
               Center(
                 child: SyncTasksButton(

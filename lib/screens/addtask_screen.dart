@@ -105,6 +105,7 @@ class AddTaskScreen extends StatelessWidget {
             repeats: [...context.read<DayButtonsModel>().repeates],
             taskId: UniqueKey().toString().replaceAll(RegExp(r'(\[|\]|#)'), ''),
           ),
+          notify: false,
         );
   }
 }
