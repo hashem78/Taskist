@@ -77,6 +77,12 @@ class MainScreen extends StatelessWidget {
         title: kappTitle,
         actions: [
           PopupMenuButton(
+            color: kprimaryDarkColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
             onSelected: (selected) {
               switch (selected) {
                 case 0:
@@ -90,7 +96,12 @@ class MainScreen extends StatelessWidget {
             itemBuilder: (_) => [
               const PopupMenuItem(
                 value: 0,
-                child: const Text("Sort by priority"),
+                child: const Text(
+                  "Sort by priority",
+                  style: TextStyle(
+                    color: kTextColor,
+                  ),
+                ),
               ),
             ],
           ),
@@ -253,6 +264,8 @@ TaskModel buildTaskModelWithSync(doc) {
         ? HighTaskPriorityPredicate()
         : doc.get('predicate') == 'medium'
             ? MediumTaskPriorityPredicate()
-            : LowTaskPriorityPredicate(),
+            : doc.get('predicate') == 'no'
+                ? LowTaskPriorityPredicate()
+                : NoPriorityPredicate(),
   );
 }
