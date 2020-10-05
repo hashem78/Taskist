@@ -1,3 +1,4 @@
+import 'package:Taskist/models/radiopriority_model.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
 import 'package:Taskist/screens/addtask_screen.dart';
@@ -29,6 +30,7 @@ class AddTaskFAB extends StatelessWidget {
             .whenComplete(
           () {
             //Provider.of<TaskListModel>(context, listen: false).rebuild();
+            Provider.of<RadioPriorityRowModel>(context, listen: false).clear();
             Provider.of<DayButtonsModel>(context, listen: false).clear();
             kfieldList.forEach(
               (element) {

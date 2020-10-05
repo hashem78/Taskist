@@ -7,4 +7,9 @@ class RadioPriorityRowModel with ChangeNotifier {
     priority = newPriority;
     notifyListeners();
   }
+
+  void clear() {
+    priority = NoPriorityPredicate();
+    notifyListeners();
+  }
 }

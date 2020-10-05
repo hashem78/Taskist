@@ -54,6 +54,7 @@ List<TaskityTextField> kfieldList = [
     },
     hintText: "Feed the cats!",
     textInputAction: TextInputAction.done,
+    maxLines: 1,
   ),
   TaskityTextField(
     title: "Description",

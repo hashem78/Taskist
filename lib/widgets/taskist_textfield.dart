@@ -32,7 +32,7 @@ class TaskityTextField extends StatelessWidget {
         // },
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: validator != null ? ((text) => validator(text)) : null,
-        maxLines: maxLines ?? 1,
+        maxLines: maxLines,
         //keyboardType: TextInputType.multiline,
         keyboardType: keyboardType ?? TextInputType.multiline,
         textAlign: TextAlign.left,
