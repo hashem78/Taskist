@@ -163,7 +163,7 @@ class TaskStreamBuilder extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
       builder: (_, snapshot) {
         if (!snapshot.hasData || snapshot == null)
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         var docs = snapshot.data.docs;
         var actualList = <TaskModel>[];
         for (var doc in docs) {
