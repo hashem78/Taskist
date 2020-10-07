@@ -10,7 +10,9 @@ import 'dart:collection';
 part 'online_tasks_state.dart';
 
 class OnlineTasksCubit extends Cubit<OnlineTasksState> {
-  OnlineTasksCubit() : super(OnlineTasksInitial());
+  OnlineTasksCubit() : super(OnlineTasksInitial()) {
+    firstTimeLoad();
+  }
   void firstTimeLoad() {
     getFirestoreTasks().then(
       (tasks) {

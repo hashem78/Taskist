@@ -1,39 +1,28 @@
 import 'package:Taskist/components/animated_positioned_arrow.dart';
-import 'package:Taskist/cubit/online_tasks_cubit.dart';
-import 'package:Taskist/models/taskpriority_model.dart';
-import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 
 class WidgetBlock extends StatelessWidget {
   final List<Widget> children;
   final String title;
   final bool collapsed;
   final ValueNotifier<bool> collapseNotifier;
-  final TaskPriorityPredicate predicate;
   final String emptyMessage;
+  final Function(String) onChildDismissed;
   WidgetBlock({
     this.children,
     this.title,
     this.collapsed = false,
+    this.onChildDismissed,
   })  : collapseNotifier = ValueNotifier(collapsed),
-        emptyMessage = null,
-        predicate = null;
+        emptyMessage = null;
   WidgetBlock.empty({
     @required this.title,
     @required this.emptyMessage,
     this.collapsed = false,
   })  : children = null,
         collapseNotifier = ValueNotifier(collapsed),
-        predicate = null;
-
-  WidgetBlock.sorted({
-    this.children,
-    this.title,
-    this.collapsed = false,
-    this.emptyMessage,
-    this.predicate,
-  }) : collapseNotifier = ValueNotifier(collapsed);
+        onChildDismissed = null;
 
   @override
   Widget build(BuildContext context) {
@@ -106,15 +95,10 @@ class WidgetBlock extends StatelessWidget {
       itemCount: children.length,
       itemBuilder: (context, index) {
         var widget = (children[index] as dynamic);
-        if (widget.model.predicate != predicate) return Container();
         return Dismissible(
           key: UniqueKey(),
-          child: children[index],
-          onDismissed: (_) {
-            context
-                .bloc<OnlineTasksCubit>()
-                .removeOnlineTask(widget.model.taskId);
-          },
+          child: widget,
+          onDismissed: (_) => onChildDismissed(widget.model.taskId),
         );
       },
     );

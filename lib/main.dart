@@ -1,19 +1,21 @@
 import 'package:Taskist/constants.dart';
+import 'package:Taskist/cubit/high/filtered_high_cubit.dart';
 import 'package:Taskist/cubit/online_tasks_cubit.dart';
 import 'package:Taskist/models/task_model.dart';
 import 'package:Taskist/models/tasklist_model.dart';
 import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:Taskist/screens/sorted_tasks_screen.dart';
-import 'package:Taskist/components/animated_tasktile.dart';
 import 'package:Taskist/widgets/task_tile.dart';
 import 'package:Taskist/widgets/widget_block.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'components/animated_widget_block.dart';
+import 'cubit/low/filtered_low_cubit.dart';
+import 'cubit/medium/filtered_medium_cubit.dart';
+import 'cubit/none/filtered_none_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,17 +40,29 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: kmainScreen,
       routes: {
-        ksortedTasksScreen: (context) => SortedTasksScreen(),
-        kmainScreen: (context) {
-          return BlocProvider(
-            create: (_) {
-              var cubit = OnlineTasksCubit();
-              cubit.firstTimeLoad();
-              return cubit;
-            },
-            child: MainScreen(),
+        ksortedTasksScreen: (context) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<FilteredHighCubit>(
+                create: (context) => FilteredHighCubit(),
+              ),
+              BlocProvider<FilteredMediumCubit>(
+                create: (context) => FilteredMediumCubit(),
+              ),
+              BlocProvider<FilteredLowCubit>(
+                create: (context) => FilteredLowCubit(),
+              ),
+              BlocProvider<FilteredNoneCubit>(
+                create: (context) => FilteredNoneCubit(),
+              ),
+            ],
+            child: FilteredTasksScreen(),
           );
-        }
+        },
+        kmainScreen: (context) => BlocProvider(
+              create: (_) => OnlineTasksCubit(),
+              child: MainScreen(),
+            ),
       },
       theme: ThemeData(
         accentColor: kaccentColor,
@@ -80,7 +94,9 @@ class MainScreen extends StatelessWidget {
             onSelected: (selected) {
               switch (selected) {
                 case 0:
-                  Navigator.pushNamed(context, ksortedTasksScreen);
+                  Navigator.pushNamed(context, ksortedTasksScreen).whenComplete(
+                      () => BlocProvider.of<OnlineTasksCubit>(context)
+                          .firstTimeLoad());
                   break;
               }
             },
@@ -105,7 +121,6 @@ class MainScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //LocalTaskList(),
               OnlineTasksBlock(),
             ],
           ),
@@ -119,7 +134,6 @@ class OnlineTasksBlock extends StatelessWidget {
   const OnlineTasksBlock({
     Key key,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<OnlineTasksCubit, OnlineTasksState>(
@@ -130,9 +144,9 @@ class OnlineTasksBlock extends StatelessWidget {
         } else if (state is OnlineTasksEmpty) {
           return buildEmptyTasks(state);
         } else if (state is OnlineFirstTimeTasksLoaded) {
-          return buildLocalBlockFirstTime(state);
+          return buildLocalBlockFirstTime(context, state);
         } else if (state is OnlineTasksLoaded) {
-          return buildLocalBlock(state);
+          return buildLocalBlock(context, state);
         }
         return Container();
       },
@@ -147,8 +161,11 @@ class OnlineTasksBlock extends StatelessWidget {
   }
 
   AnimatedWidgetBlock buildLocalBlockFirstTime(
-      OnlineFirstTimeTasksLoaded state) {
+      BuildContext context, OnlineFirstTimeTasksLoaded state) {
     return AnimatedWidgetBlock(
+      onChildDismissed: (String id) {
+        BlocProvider.of<OnlineTasksCubit>(context).removeOnlineTask(id);
+      },
       title: "Online",
       children: state.taskListModel
           .map(
@@ -160,8 +177,12 @@ class OnlineTasksBlock extends StatelessWidget {
     );
   }
 
-  AnimatedWidgetBlock buildLocalBlock(OnlineTasksLoaded state) {
+  AnimatedWidgetBlock buildLocalBlock(
+      BuildContext context, OnlineTasksLoaded state) {
     return AnimatedWidgetBlock(
+      onChildDismissed: (String id) {
+        BlocProvider.of<OnlineTasksCubit>(context).removeOnlineTask(id);
+      },
       title: "Online",
       children: state.taskListModel
           .map(

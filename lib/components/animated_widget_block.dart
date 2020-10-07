@@ -1,18 +1,17 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:Taskist/widgets/widget_block.dart';
 
 class AnimatedWidgetBlock extends StatefulWidget {
   final List<dynamic> children;
   final WidgetBlock wblock;
-  final Function() onChildDismissed;
+  final Function(String id) onChildDismissed;
   final String title;
   AnimatedWidgetBlock({
     @required this.children,
     this.title,
-    this.onChildDismissed,
+    @required this.onChildDismissed,
   }) : wblock = WidgetBlock(
+          onChildDismissed: onChildDismissed,
           children: children,
           title: title,
         );
