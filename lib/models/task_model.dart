@@ -1,21 +1,33 @@
 import 'package:Taskist/models/taskpriority_model.dart';
+import 'package:equatable/equatable.dart';
 
-class TaskModel {
-  String time = "";
-  String taskName = "";
-  String description = "";
-  String notes = "";
-  List<bool> repeats = [];
-  TaskPriorityPredicate predicate = LowTaskPriorityPredicate();
-  String taskId;
+class TaskModel extends Equatable {
+  @override
+  List<Object> get props => [
+        time,
+        taskName,
+        taskId,
+        description,
+        notes,
+        repeats,
+        predicate,
+        taskId,
+      ];
+  final String time;
+  final String taskName;
+  final String description;
+  final String notes;
+  final List<bool> repeats;
+  final TaskPriorityPredicate predicate;
+  final String taskId;
   TaskModel({
-    this.time,
-    this.taskName,
-    this.repeats,
+    this.time = "",
+    this.taskName = "",
+    this.repeats = const [],
     this.predicate,
-    this.notes,
-    this.description,
-    this.taskId,
+    this.notes = "",
+    this.description = "",
+    this.taskId = "",
   });
   TaskModel.fromJson(Map<String, dynamic> json)
       : time = json['time'],

@@ -1,20 +1,18 @@
-import 'dart:math';
-
 import 'package:Taskist/constants.dart';
-import 'package:Taskist/models/daybuttons_model.dart';
-import 'package:Taskist/models/radiopriority_model.dart';
+import 'package:Taskist/cubit/online_tasks_cubit.dart';
 import 'package:Taskist/models/task_model.dart';
 import 'package:Taskist/models/tasklist_model.dart';
 import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:Taskist/screens/sorted_tasks_screen.dart';
-import 'package:Taskist/components/add_task_fab.dart';
 import 'package:Taskist/components/animated_tasktile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Taskist/widgets/task_tile.dart';
+import 'package:Taskist/widgets/widget_block.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'components/animated_widget_block.dart';
 
 void main() async {
@@ -36,30 +34,26 @@ class MyApp extends StatelessWidget {
   MyApp(this.loadedListModel);
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(
-          value: loadedListModel,
-        ),
-        ChangeNotifierProvider(
-          create: (_) => RadioPriorityRowModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => DayButtonsModel(),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: kmainScreen,
-        routes: {
-          ksortedTasksScreen: (context) => SortedTasksScreen(),
-          kmainScreen: (context) => MainScreen(),
-        },
-        theme: ThemeData(
-          accentColor: kaccentColor,
-          primaryColor: kprimaryColor,
-          backgroundColor: kprimaryColor,
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: kmainScreen,
+      routes: {
+        ksortedTasksScreen: (context) => SortedTasksScreen(),
+        kmainScreen: (context) {
+          return BlocProvider(
+            create: (_) {
+              var cubit = OnlineTasksCubit();
+              cubit.firstTimeLoad();
+              return cubit;
+            },
+            child: MainScreen(),
+          );
+        }
+      },
+      theme: ThemeData(
+        accentColor: kaccentColor,
+        primaryColor: kprimaryColor,
+        backgroundColor: kprimaryColor,
       ),
     );
   }
@@ -69,7 +63,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: AddTaskFAB(),
+      //floatingActionButton: AddTaskFAB(),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: kprimaryDarkColor,
@@ -86,10 +80,7 @@ class MainScreen extends StatelessWidget {
             onSelected: (selected) {
               switch (selected) {
                 case 0:
-                  context.read<TaskListModel>().rebuild();
-                  Navigator.pushNamed(context, ksortedTasksScreen).whenComplete(
-                    () => context.read<TaskListModel>().rebuild(),
-                  );
+                  Navigator.pushNamed(context, ksortedTasksScreen);
                   break;
               }
             },
@@ -114,8 +105,8 @@ class MainScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LocalTaskList(),
-              TaskStreamBuilder(),
+              //LocalTaskList(),
+              OnlineTasksBlock(),
             ],
           ),
         ),
@@ -124,87 +115,85 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-class LocalTaskList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var _taskList = Provider.of<TaskListModel>(context).tasks;
-    var _dataList = _taskList.values
-        .map(
-          (e) => AnimatedTaskTile(
-            model: e,
-            animationDuration: Duration(
-              milliseconds: 200 + 100 * Random().nextInt(10),
-            ),
-          ),
-        )
-        .toList();
-    return AnimatedWidgetBlock(
-      title: "Local",
-      children: _dataList,
-      onChildDismissed: (context, child) {
-        context.read<TaskListModel>().removeTask(
-              child.model.taskId,
-              notify: false,
-            );
-      },
-    );
-  }
-}
-
-class TaskStreamBuilder extends StatelessWidget {
-  const TaskStreamBuilder({
+class OnlineTasksBlock extends StatelessWidget {
+  const OnlineTasksBlock({
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var taskList = Provider.of<TaskListModel>(context);
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
-      builder: (_, snapshot) {
-        if (!snapshot.hasData || snapshot == null)
-          return Center(child: CircularProgressIndicator());
-        var docs = snapshot.data.docs;
-        var actualList = <TaskModel>[];
-        for (var doc in docs) {
-          var tmodel = buildTaskModelWithSync(doc);
-          if (!taskList.contains(tmodel.taskId)) actualList.add(tmodel);
-        }
-        if (actualList.length != 0) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Divider(
-                thickness: 1,
-              ),
-              AnimatedWidgetBlock(
-                title: "Online",
-                onChildDismissed: (context, child) => FirebaseFirestore.instance
-                    .collection('tasks')
-                    .doc(child.model.taskId)
-                    .delete(),
-                children: actualList
-                    .map(
-                      (e) => AnimatedTaskTile(
-                        model: e,
-                        animationDuration: Duration(
-                          milliseconds: 200,
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-              Center(
-                child: SyncTasksButton(
-                  taskList: taskList,
-                  actualList: actualList,
-                ),
-              ),
-            ],
-          );
+    return BlocConsumer<OnlineTasksCubit, OnlineTasksState>(
+      // ignore: missing_return
+      builder: (context, state) {
+        if (state is OnlineTasksLoading) {
+          return buildLoadingTasks();
+        } else if (state is OnlineTasksEmpty) {
+          return buildEmptyTasks(state);
+        } else if (state is OnlineFirstTimeTasksLoaded) {
+          return buildLocalBlockFirstTime(state);
+        } else if (state is OnlineTasksLoaded) {
+          return buildLocalBlock(state);
         }
         return Container();
       },
+      listener: (context, state) {
+        if (state is OnlineTasksFailure) {
+          buildSnackBar(context, state.message);
+        } else if (state is OnlineRemoveTasksSuccess) {
+          buildSnackBar(context, state.message);
+        }
+      },
+    );
+  }
+
+  AnimatedWidgetBlock buildLocalBlockFirstTime(
+      OnlineFirstTimeTasksLoaded state) {
+    return AnimatedWidgetBlock(
+      title: "Online",
+      children: state.taskListModel
+          .map(
+            (e) => TaskTile(
+              model: e,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  AnimatedWidgetBlock buildLocalBlock(OnlineTasksLoaded state) {
+    return AnimatedWidgetBlock(
+      title: "Online",
+      children: state.taskListModel
+          .map(
+            (e) => TaskTile(
+              model: e,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> buildSnackBar(
+      BuildContext context, String message) {
+    return Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+        ),
+      ),
+    );
+  }
+
+  Widget buildEmptyTasks(OnlineTasksEmpty state) {
+    return WidgetBlock.empty(
+      title: state.title,
+      emptyMessage: state.message,
+    );
+  }
+
+  Widget buildLoadingTasks() {
+    return Center(
+      child: CircularProgressIndicator(),
     );
   }
 }
