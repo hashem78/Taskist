@@ -183,8 +183,8 @@ class _TasksBlockState extends State<TasksBlock> {
 
   AnimatedWidgetBlock buildLocalBlock(BuildContext context, TasksLoaded state) {
     return AnimatedWidgetBlock(
-      onChildDismissed: (String id) {
-        cubit.remove(id);
+      onChildDismissed: (String id) async {
+        await cubit.remove(id);
         widget.onUpdate(cubit);
       },
       title: widget.blockTitile,

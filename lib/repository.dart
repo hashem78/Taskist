@@ -41,22 +41,26 @@ class TasksRepository {
 
   Future<void> add(TaskModel model) async {
     var raw = _tasktoJson(model);
-    //await onlineDataProvider.add(raw);
+    await onlineDataProvider.add(raw);
     await localDataProvider.add(raw);
   }
+
+  Future<void> addLocal(TaskModel model) async =>
+      await localDataProvider.add(_tasktoJson(model));
+
+  Future<void> addOnline(TaskModel model) async =>
+      await onlineDataProvider.add(_tasktoJson(model));
 
   Future<void> remove(String id) async {
     await onlineDataProvider.remove(id);
     await localDataProvider.remove(id);
   }
 
-  Future<void> removeOnline(String id) async {
-    await onlineDataProvider.remove(id);
-  }
+  Future<void> removeOnline(String id) async =>
+      await onlineDataProvider.remove(id);
 
-  Future<void> removeLocal(String id) async {
-    await localDataProvider.remove(id);
-  }
+  Future<void> removeLocal(String id) async =>
+      await localDataProvider.remove(id);
 
   List<TaskModel> _tasksFromRawData(List<Map<String, dynamic>> rawData) {
     var _internalList = <TaskModel>[];
@@ -78,24 +82,21 @@ class TasksRepository {
     return UnmodifiableListView(_internalList);
   }
 
-  TaskModel _jsonToTask(Map<String, dynamic> rawModel) {
-    final model = TaskModel(
-      taskId: rawModel['taskId'],
-      taskName: rawModel['taskName'],
-      description: rawModel['description'],
-      time: rawModel['time'],
-      notes: rawModel['notes'],
-      repeats: [false, false, false, false, false, false, false],
-      predicate: rawModel['predicate'] == "high"
-          ? HighTaskPriorityPredicate()
-          : rawModel['predicate'] == 'medium'
-              ? MediumTaskPriorityPredicate()
-              : rawModel['predicate'] == 'low'
-                  ? LowTaskPriorityPredicate()
-                  : NoPriorityPredicate(),
-    );
-    return model;
-  }
+  TaskModel _jsonToTask(Map<String, dynamic> rawModel) => TaskModel(
+        taskId: rawModel['taskId'],
+        taskName: rawModel['taskName'],
+        description: rawModel['description'],
+        time: rawModel['time'],
+        notes: rawModel['notes'],
+        repeats: [false, false, false, false, false, false, false],
+        predicate: rawModel['predicate'] == "high"
+            ? HighTaskPriorityPredicate()
+            : rawModel['predicate'] == 'medium'
+                ? MediumTaskPriorityPredicate()
+                : rawModel['predicate'] == 'low'
+                    ? LowTaskPriorityPredicate()
+                    : NoPriorityPredicate(),
+      );
 
   // ignore: unused_element
   Map<String, dynamic> _tasktoJson(TaskModel taskModel) => {
