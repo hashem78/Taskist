@@ -1,6 +1,8 @@
-import 'package:Taskist/models/taskpriority_model.dart';
+import 'package:Taskist/models/task_predicate_model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
+@immutable
 class TaskModel extends Equatable {
   @override
   List<Object> get props => [
@@ -29,20 +31,7 @@ class TaskModel extends Equatable {
     this.description = "",
     this.taskId = "",
   });
-  TaskModel.fromJson(Map<String, dynamic> json)
-      : time = json['time'],
-        taskName = json['taskName'],
-        description = json['description'],
-        notes = json['notes'],
-        repeats = List<bool>.from(json['repeats']),
-        predicate = json['predicate'] == "high"
-            ? HighTaskPriorityPredicate()
-            : json['predicate'] == 'medium'
-                ? MediumTaskPriorityPredicate()
-                : json['predicate'] == 'low'
-                    ? LowTaskPriorityPredicate()
-                    : NoPriorityPredicate(),
-        taskId = json['taskId'];
+
   Map<String, dynamic> toJson() => {
         'time': time,
         'taskName': taskName,
