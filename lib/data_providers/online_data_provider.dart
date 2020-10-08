@@ -18,7 +18,6 @@ class OnlineDataProvider implements DataProvider {
         _internalList.add(mp);
       },
     );
-    print(_internalList);
     return UnmodifiableListView(_internalList);
   }
 
@@ -42,7 +41,14 @@ class OnlineDataProvider implements DataProvider {
         _internalList.add(mp);
       },
     );
-    print(_internalList);
     return UnmodifiableListView(_internalList);
+  }
+
+  @override
+  Future<void> add(Map<String, dynamic> model) async {
+    await FirebaseFirestore.instance
+        .collection(_path)
+        .doc(model['taskId'])
+        .set(model);
   }
 }

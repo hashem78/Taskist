@@ -32,15 +32,6 @@ class TaskModel extends Equatable {
     this.taskId = "",
   });
 
-  Map<String, dynamic> toJson() => {
-        'time': time,
-        'taskName': taskName,
-        'description': description,
-        'notes': notes,
-        'repeats': repeats,
-        'taskId': taskId,
-        'predicate': predicate.toString()
-      };
   bool operator <(TaskModel other) {
     return this.predicate < other.predicate;
   }

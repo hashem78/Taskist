@@ -7,6 +7,6 @@ abstract class DataProvider {
   Future<List<Map<String, dynamic>>> fetchWithPredicate(
     TaskPriorityPredicate predicate,
   );
-
+  Future<void> add(Map<String, dynamic> model);
   Future<void> remove(String id);
 }

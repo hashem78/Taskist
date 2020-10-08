@@ -9,27 +9,35 @@ part 'tasks_state.dart';
 
 class TasksCubit extends Cubit<TasksState> {
   TasksCubit({
-    this.localName = 'localData',
     this.onlineName = 'tasks',
-  })  : _repository = Repository(localName, onlineName),
+    this.localName = 'localData',
+  })  : _repository = TasksRepository(onlineName, localName),
         super(TasksInitial());
   final String localName;
   final String onlineName;
-  final Repository _repository;
+  final TasksRepository _repository;
 
   void fetchOnline() {
     emit(TasksLoading());
     _repository.fetchOnline().then((value) => _response(value));
   }
 
-  void fetchLocal() {
+  Future<void> fetchLocal() async {
     emit(TasksLoading());
-    _repository.fetchLocal().then((value) => _response(value));
+    await _repository.fetchLocal().then((value) => _response(value));
   }
 
   void fetchAll() {
     emit(TasksLoading());
     _repository.fetchAll().then((value) => _response(value));
+  }
+
+  Future<void> remove(String id) async {
+    await _repository.remove(id);
+  }
+
+  Future<void> add(TaskModel model) async {
+    await _repository.add(model);
   }
 
   void fetchWithFilter(TaskPriorityPredicate predicate) {}

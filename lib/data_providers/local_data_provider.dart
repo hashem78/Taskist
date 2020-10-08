@@ -12,13 +12,9 @@ class LocalDataProvider implements DataProvider {
     var _box = await Hive.openBox(_name);
     var _mp = _box.toMap();
     var _internalList = <Map<String, dynamic>>[];
-    _mp.forEach(
-      (key, value) {
-        _internalList.add(
-          {
-            key: value,
-          },
-        );
+    _mp.values.forEach(
+      (element) {
+        _internalList.add(Map<String, dynamic>.from(element));
       },
     );
     return UnmodifiableListView(_internalList);
@@ -47,5 +43,11 @@ class LocalDataProvider implements DataProvider {
       },
     );
     return UnmodifiableListView(_internalList);
+  }
+
+  @override
+  Future<void> add(Map<String, dynamic> rawModel) async {
+    var _box = await Hive.openBox(_name);
+    await _box.put(rawModel['taskId'], rawModel);
   }
 }
