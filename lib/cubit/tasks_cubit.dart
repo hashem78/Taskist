@@ -11,7 +11,7 @@ class TasksCubit extends Cubit<TasksState> {
   TasksCubit({
     this.localName = 'localData',
     this.onlineName = 'tasks',
-  })  : _repository = Repository.init(localName, onlineName),
+  })  : _repository = Repository(localName, onlineName),
         super(TasksInitial());
   final String localName;
   final String onlineName;

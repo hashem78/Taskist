@@ -11,14 +11,11 @@ import 'models/task_predicate_model.dart';
 class Repository {
   final OnlineDataProvider onlineDataProvider;
   final LocalDataProvider localDataProvider;
-  Repository._(String collectionPath, String path)
+
+  Repository(String collectionPath, String path)
       : onlineDataProvider = OnlineDataProvider('tasks'),
         localDataProvider = LocalDataProvider('localData');
-  factory Repository.init(String collectionPath, String path) {
-    var repo = Repository._(collectionPath, path);
-    repo.localDataProvider.init();
-    return repo;
-  }
+
   Future<List<TaskModel>> fetchOnline() async {
     var _internalList = await onlineDataProvider.fetch();
     var _listOfData = _tasksFromRawData(_internalList);

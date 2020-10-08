@@ -1,15 +1,11 @@
 import 'dart:collection';
 import 'package:Taskist/data_providers/data_provider.dart';
 import 'package:Taskist/models/task_predicate_model.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
 
 class LocalDataProvider implements DataProvider {
   final String _name;
   LocalDataProvider(String name) : _name = name;
-  Future<void> init() async {
-    await Hive.initFlutter(_name);
-  }
 
   @override
   Future<List<Map<String, dynamic>>> fetch() async {
