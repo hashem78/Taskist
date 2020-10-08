@@ -1,33 +1,70 @@
-import 'package:Taskist/helpers.dart';
+import 'package:Taskist/models/taskpriority_model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 
-@immutable
 class TaskModel extends Equatable {
-  final String taskId;
+  @override
+  List<Object> get props => [
+        time,
+        taskName,
+        taskId,
+        description,
+        notes,
+        repeats,
+        predicate,
+        taskId,
+      ];
+  final String time;
   final String taskName;
   final String description;
   final String notes;
   final List<bool> repeats;
   final TaskPriorityPredicate predicate;
-
+  final String taskId;
   TaskModel({
-    this.taskId = "",
+    this.time = "",
     this.taskName = "",
-    this.description = "",
-    this.notes = "",
     this.repeats = const [],
-    this.predicate = TaskPriorityPredicate.low,
+    this.predicate,
+    this.notes = "",
+    this.description = "",
+    this.taskId = "",
   });
+  TaskModel.fromJson(Map<String, dynamic> json)
+      : time = json['time'],
+        taskName = json['taskName'],
+        description = json['description'],
+        notes = json['notes'],
+        repeats = List<bool>.from(json['repeats']),
+        predicate = json['predicate'] == "high"
+            ? HighTaskPriorityPredicate()
+            : json['predicate'] == 'medium'
+                ? MediumTaskPriorityPredicate()
+                : json['predicate'] == 'low'
+                    ? LowTaskPriorityPredicate()
+                    : NoPriorityPredicate(),
+        taskId = json['taskId'];
+  Map<String, dynamic> toJson() => {
+        'time': time,
+        'taskName': taskName,
+        'description': description,
+        'notes': notes,
+        'repeats': repeats,
+        'taskId': taskId,
+        'predicate': predicate.toString()
+      };
+  bool operator <(TaskModel other) {
+    return this.predicate < other.predicate;
+  }
 
-  @override
-  List<Object> get props => [
-        taskId,
-        taskName,
-        description,
-        notes,
-        repeats,
-        predicate,
-      ];
-  Map<String, dynamic> toJson() {}
+  bool operator >(TaskModel other) {
+    return other.predicate < this.predicate;
+  }
+
+  int get hashCode => int.tryParse(taskId);
+  bool operator ==(Object other) {
+    if (other is TaskModel) {
+      return taskId == other.taskId;
+    }
+    return false;
+  }
 }
