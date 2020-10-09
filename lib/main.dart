@@ -10,7 +10,9 @@ import 'package:Taskist/widgets/widget_block.dart';
 
 import 'components/animated_widget_block.dart';
 import 'constants.dart';
-import 'cubit/tasks/tasks_cubit.dart';
+import 'cubit/tasks/local/local_tasks_cubit.dart';
+import 'cubit/tasks/online/online_tasks_cubit.dart';
+import 'models/task.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,13 +41,19 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatelessWidget {
+  final _onlineTasksCubit = OnlineTasksCubit();
+  final _localTasksCubit = LocalTasksCubit();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => TasksCubit(),
+      create: (_) => LocalTasksCubit(),
       child: Scaffold(
         key: kmainScreenScaffoldKey,
-        floatingActionButton: buildFAB(),
+        floatingActionButton: BlocProvider.value(
+          value: _localTasksCubit,
+          child: buildFAB(context),
+        ),
         appBar: AppBar(
           elevation: 0,
           backgroundColor: kprimaryDarkColor,
@@ -81,16 +89,47 @@ class MainScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TasksBlock(
-                  onUpdate: (cubit) => cubit.fetchLocal(),
-                  blockTitile: "Local",
+                BlocConsumer<LocalTasksCubit, LocalTasksState>(
+                  cubit: _localTasksCubit,
+                  builder: (context, state) {
+                    if (state is LocalTasksInitial) {
+                      _localTasksCubit.fetch();
+                    } else if (state is LocalTasksLoading) {
+                      return buildLoadingTasks();
+                    } else if (state is LocalTasksEmpty) {
+                      return buildEmptyTasks('Local', state);
+                    } else if (state is LocalTasksLoaded) {
+                      return buildLocalBlock(
+                        context,
+                        "Local",
+                        _localTasksCubit,
+                        state,
+                      );
+                    }
+                    return Container();
+                  },
+                  listener: (_, __) {},
                 ),
-                BlocProvider(
-                  create: (_) => TasksCubit(),
-                  child: TasksBlock(
-                    onUpdate: (cubit) => cubit.fetchOnline(),
-                    blockTitile: "Online",
-                  ),
+                BlocConsumer<OnlineTasksCubit, OnlineTasksState>(
+                  cubit: _onlineTasksCubit,
+                  builder: (context, state) {
+                    if (state is OnlineTasksInitial) {
+                      _onlineTasksCubit.fetch();
+                    } else if (state is OnlineTasksLoading) {
+                      return buildLoadingTasks();
+                    } else if (state is OnlineTasksEmpty) {
+                      return buildEmptyTasks('Online', state);
+                    } else if (state is OnlineTasksLoaded) {
+                      return buildLocalBlock(
+                        context,
+                        "Online",
+                        _onlineTasksCubit,
+                        state,
+                      );
+                    }
+                    return Container();
+                  },
+                  listener: (_, __) {},
                 ),
               ],
             ),
@@ -100,7 +139,7 @@ class MainScreen extends StatelessWidget {
     );
   }
 
-  Widget buildFAB() {
+  Widget buildFAB(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: kprimaryDarkColor,
       child: Icon(
@@ -109,110 +148,62 @@ class MainScreen extends StatelessWidget {
         color: Colors.blue,
       ),
       onPressed: () {
-        kmainScreenScaffoldKey.currentState.showBottomSheet(
-          (context) => AddTaskScreen(),
+        showModalBottomSheet<TaskModel>(
+          context: context,
           backgroundColor: Colors.blue,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(50),
-              topRight: Radius.circular(50),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: const BorderRadius.only(
+              topLeft: const Radius.circular(50),
+              topRight: const Radius.circular(50),
             ),
           ),
+          builder: (_) => AddTaskScreen(),
+        ).then(
+          (value) {
+            _localTasksCubit.add(value);
+            _localTasksCubit.fetch();
+          },
         );
       },
     );
   }
 }
 
-class TasksBlock extends StatefulWidget {
-  final Function(TasksCubit cubit) onUpdate;
-  final String blockTitile;
-  TasksBlock({
-    Key key,
-    @required this.onUpdate,
-    @required this.blockTitile,
-  }) : super(key: key);
-
-  @override
-  _TasksBlockState createState() => _TasksBlockState();
+AnimatedWidgetBlock buildLocalBlock(
+    BuildContext context, String blockTitle, dynamic cubit, dynamic state) {
+  List<Widget> children =
+      List<Widget>.from(state.tasks.map((e) => TaskTile(model: e)));
+  return AnimatedWidgetBlock(
+    onChildDismissed: (String id) async {
+      await cubit.remove(id);
+      cubit.fetch();
+    },
+    title: blockTitle,
+    children: children,
+  );
 }
 
-class _TasksBlockState extends State<TasksBlock> {
-  TasksCubit cubit;
-  @override
-  void initState() {
-    super.initState();
-    cubit = context.bloc<TasksCubit>();
-    widget.onUpdate(cubit);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<TasksCubit, TasksState>(
-      // ignore: missing_return
-      buildWhen: (s1, s2) {
-        if (s1 is TasksLoaded) {
-          if (s2 is TasksLoaded) {
-            if (s1.tasks.length > s2.tasks.length) {
-              return false;
-            } else if (s2 is TasksEmpty) {
-              return true;
-            }
-          }
-          return true;
-        }
-      },
-      // ignore: missing_return
-      builder: (context, state) {
-        if (state is TasksLoading) {
-          return buildLoadingTasks();
-        } else if (state is TasksEmpty) {
-          return buildEmptyTasks(state);
-        } else if (state is TasksLoaded) {
-          return buildLocalBlock(context, state);
-        }
-        return Container();
-      },
-      listener: (context, state) {
-        if (state is TasksFailure) {
-          buildSnackBar(context, state.message);
-        }
-      },
-    );
-  }
-
-  AnimatedWidgetBlock buildLocalBlock(BuildContext context, TasksLoaded state) {
-    return AnimatedWidgetBlock(
-      onChildDismissed: (String id) async {
-        await cubit.remove(id);
-        widget.onUpdate(cubit);
-      },
-      title: widget.blockTitile,
-      children: state.tasks.map((e) => TaskTile(model: e)).toList(),
-    );
-  }
-
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> buildSnackBar(
-      BuildContext context, String message) {
-    return Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-        ),
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason> buildSnackBar(
+    BuildContext context, String message) {
+  return Scaffold.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget buildEmptyTasks(TasksEmpty state) {
-    return WidgetBlock.empty(
-      title: widget.blockTitile,
-      emptyMessage: state.message,
-    );
-  }
+Widget buildEmptyTasks(String blockTitle, dynamic state) {
+  return WidgetBlock.empty(
+    title: blockTitle,
+    emptyMessage: state.message,
+  );
+}
 
-  Widget buildLoadingTasks() {
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
+Widget buildLoadingTasks() {
+  return Center(
+    child: CircularProgressIndicator(),
+  );
 }

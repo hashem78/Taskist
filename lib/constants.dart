@@ -1,3 +1,4 @@
+import 'package:Taskist/widgets/taskist_text_field.dart';
 import 'package:flutter/material.dart';
 
 const kprimaryDarkColor = const Color(0xFF455A64);
@@ -23,3 +24,23 @@ const List<String> kdayTitles = const [
   "F",
 ];
 final kmainScreenScaffoldKey = GlobalKey<ScaffoldState>();
+List<TaskistTextField> kfieldList = [
+  TaskistTextField(
+    title: "Name",
+    keyboardType: TextInputType.name,
+    validator: (text) {
+      if (text.length == 0) return "Name has to be atleast 1 character long";
+    },
+    hintText: "Feed the cats!",
+    textInputAction: TextInputAction.done,
+    maxLines: 1,
+  ),
+  TaskistTextField(
+    title: "Description",
+    hintText: "Describe me bby!",
+  ),
+  TaskistTextField(
+    title: "Notes",
+    hintText: "Not the salamon",
+  ),
+];

@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:Taskist/data_providers/data_provider.dart';
-import 'package:Taskist/models/task_predicate_model.dart';
+import 'package:Taskist/data_providers/data.dart';
+import 'package:Taskist/models/task_predicate.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OnlineDataProvider implements DataProvider {

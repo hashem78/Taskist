@@ -1,6 +1,6 @@
 import 'package:Taskist/widgets/task_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:Taskist/models/task_model.dart';
+import 'package:Taskist/models/task.dart';
 
 class AnimatedTaskTile extends StatefulWidget {
   final TaskTile taskTile;

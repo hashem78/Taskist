@@ -1,4 +1,4 @@
-import 'package:Taskist/models/task_model.dart';
+import 'package:Taskist/models/task.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
 

@@ -1,4 +1,4 @@
-import 'package:Taskist/models/task_predicate_model.dart';
+import 'package:Taskist/models/task_predicate.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable

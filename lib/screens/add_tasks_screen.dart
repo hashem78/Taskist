@@ -1,32 +1,8 @@
-import 'package:Taskist/cubit/tasks/tasks_cubit.dart';
-import 'package:Taskist/models/task_model.dart';
-import 'package:Taskist/models/task_predicate_model.dart';
+import 'package:Taskist/models/task.dart';
+import 'package:Taskist/models/task_predicate.dart';
 import 'package:Taskist/widgets/task_day_button.dart';
-import 'package:Taskist/widgets/taskist_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-List<TaskistTextField> kfieldList = [
-  TaskistTextField(
-    title: "Name",
-    keyboardType: TextInputType.name,
-    validator: (text) {
-      if (text.length == 0) return "Name has to be atleast 1 character long";
-    },
-    hintText: "Feed the cats!",
-    textInputAction: TextInputAction.done,
-    maxLines: 1,
-  ),
-  TaskistTextField(
-    title: "Description",
-    hintText: "Describe me bby!",
-  ),
-  TaskistTextField(
-    title: "Notes",
-    hintText: "Not the salamon",
-  ),
-];
 
 class AddTaskScreen extends StatelessWidget {
   @override
@@ -92,8 +68,7 @@ class AddTaskScreen extends StatelessWidget {
     );
   }
 
-  ElevatedButton buildAddButton(BuildContext context) {
-    return ElevatedButton(
+  Widget buildAddButton(BuildContext context) => ElevatedButton(
       focusNode: FocusNode(canRequestFocus: true),
       style: ElevatedButton.styleFrom(
         elevation: 3,
@@ -118,24 +93,18 @@ class AddTaskScreen extends StatelessWidget {
       ),
       onPressed: kfieldList[0].controller.text.isEmpty
           ? null
-          : () {
-              buildTaskModel(context);
-              context.bloc<TasksCubit>().fetchLocal();
-              Navigator.pop(context);
-            },
-    );
-  }
+          : () => Navigator.pop(context, buildTaskModel()));
 
-  void buildTaskModel(BuildContext context) {
-    var model = TaskModel(
-      taskName: kfieldList[0].controller.text,
-      description: kfieldList[1].controller.text,
-      notes: kfieldList[2].controller.text,
-      predicate: LowTaskPriorityPredicate(),
-      repeats: List<bool>.filled(7, false),
-      taskId: UniqueKey().toString().replaceAll(RegExp(r'(\[|\]|#)'), ''),
-    );
-    context.bloc<TasksCubit>().add(model);
+  TaskModel buildTaskModel() => TaskModel(
+        taskName: kfieldList[0].controller.text,
+        description: kfieldList[1].controller.text,
+        notes: kfieldList[2].controller.text,
+        predicate: LowTaskPriorityPredicate(),
+        repeats: List<bool>.filled(7, false),
+        taskId: UniqueKey().toString().replaceAll(RegExp(r'(\[|\]|#)'), ''),
+      );
+  void resetState() {
+    for (var field in kfieldList) field.controller.clear();
   }
 }
 // Container(
