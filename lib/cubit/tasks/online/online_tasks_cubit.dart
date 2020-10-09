@@ -15,19 +15,21 @@ class OnlineTasksCubit extends Cubit<OnlineTasksState> {
   final String onlineName;
   final OnlineTasksRepository _repository;
 
-  void fetch() {
+  Future<void> fetch() async {
     emit(OnlineTasksLoading());
-    _repository.fetch().then((value) => _response(value));
+    var value = await _repository.fetch();
+    _response(value);
   }
 
   Future<void> remove(String id) async {
+    emit(OnlineTaskRemoved());
     await _repository.remove(id);
-    fetch();
+    await fetch();
   }
 
   Future<void> add(TaskModel model) async {
     await _repository.add(model);
-    fetch();
+    await fetch();
   }
 
   void fetchWithFilter(TaskPriorityPredicate predicate) {}

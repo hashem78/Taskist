@@ -1,5 +1,3 @@
-import 'package:Taskist/constants.dart';
-import 'package:Taskist/models/task.dart';
 import 'package:Taskist/models/task_form.dart';
 import 'package:Taskist/models/task_predicate.dart';
 import 'package:bloc/bloc.dart';
@@ -27,21 +25,5 @@ class TaskFormCubit extends Cubit<TaskFormState> {
   void updatePredicate(TaskPriorityPredicate predicate) {
     taskFormModel = taskFormModel.copyWith(priorityPredicate: predicate);
     emit(TaskFormUpdate(taskFormModel: taskFormModel));
-  }
-
-  void submit() {
-    emit(
-      TaskFormSubmitted(
-        taskFormModel: TaskModel(
-          time: DateTime.now().millisecondsSinceEpoch.toString(),
-          taskName: kfieldList[0].controller.text,
-          description: kfieldList[1].controller.text,
-          notes: kfieldList[2].controller.text,
-          predicate: taskFormModel.priorityPredicate,
-          repeats: taskFormModel.repeats,
-          taskId: UniqueKey().toString().replaceAll(RegExp(r'(\[|\]|#)'), ''),
-        ),
-      ),
-    );
   }
 }

@@ -42,3 +42,8 @@ class LocalTasksLoading extends LocalTasksState {
   @override
   List<Object> get props => [];
 }
+
+class LocalTaskRemoved extends LocalTasksState {
+  @override
+  List<Object> get props => [];
+}

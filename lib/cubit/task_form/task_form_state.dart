@@ -27,17 +27,6 @@ class TaskFormDaysChanged extends TaskFormState {
   List<Object> get props => [buttonsState];
 }
 
-class TaskFormSubmitted extends TaskFormState {
-  final TaskModel taskFormModel;
-
-  TaskFormSubmitted({
-    @required this.taskFormModel,
-  });
-
-  @override
-  List<Object> get props => [taskFormModel];
-}
-
 class TaskFormUpdate extends TaskFormState {
   final TaskFormModel taskFormModel;
 

@@ -1,3 +1,4 @@
+import 'package:Taskist/models/task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,9 +34,6 @@ class AddTaskScreen extends StatelessWidget {
             return buildScreen(context, state);
           } else if (state is TaskFormUpdate) {
             return buildScreen(context, state);
-          } else if (state is TaskFormSubmitted) {
-            Navigator.of(context).pop(state.taskFormModel);
-            //return Container();
           }
           return Container();
         },
@@ -45,59 +43,60 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   Widget buildScreen(BuildContext context, dynamic state) {
-    return Material(
-      //height: MediaQuery.of(context).size.height,
+    return Container(
+      padding: const EdgeInsets.all(5),
       color: kprimaryDarkColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          for (var field in kfieldList) field,
-          OutLinedContainer(
-            child: Column(
-              children: [
-                const Text(
-                  "Priority",
-                  style: const TextStyle(
-                    color: kTextColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                buildRadioRow(state),
-              ],
-            ),
-          ),
-          OutLinedContainer(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: const Text(
-                    "Repeat on",
+      child: Scrollbar(
+        thickness: 2,
+        child: ListView(
+          children: [
+            for (var field in kfieldList) field,
+            OutLinedContainer(
+              child: Column(
+                children: [
+                  const Text(
+                    "Priority",
                     style: const TextStyle(
                       color: kTextColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    for (int i = 0; i < 7; ++i)
-                      TaskDayButton(
-                        title: kdayTitles[i],
-                        isActive: state.taskFormModel.repeats[i],
-                        onTap: () => _cubit.updateDayButtons(i),
-                      ),
-                  ],
-                ),
-              ],
+                  buildRadioRow(state),
+                ],
+              ),
             ),
-          ),
-          buildAddButton(context),
-        ],
+            OutLinedContainer(
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: const Text(
+                      "Repeat on",
+                      style: const TextStyle(
+                        color: kTextColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for (int i = 0; i < 7; ++i)
+                        TaskDayButton(
+                          title: kdayTitles[i],
+                          isActive: state.taskFormModel.repeats[i],
+                          onTap: () => _cubit.updateDayButtons(i),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            buildAddButton(context),
+          ],
+        ),
       ),
     );
   }
@@ -155,9 +154,23 @@ class AddTaskScreen extends StatelessWidget {
               ),
             ),
           ),
-          onPressed: _cubit.submit,
+          onPressed: () => kfieldList[0].controller.text.isNotEmpty
+              ? Navigator.pop<TaskModel>(context, buildTaskModel())
+              : null,
         ),
       );
+
+  TaskModel buildTaskModel() {
+    return TaskModel(
+      time: DateTime.now().millisecondsSinceEpoch.toString(),
+      taskName: kfieldList[0].controller.text,
+      description: kfieldList[1].controller.text,
+      notes: kfieldList[2].controller.text,
+      predicate: _cubit.taskFormModel.priorityPredicate,
+      repeats: _cubit.taskFormModel.repeats,
+      taskId: UniqueKey().toString().replaceAll(RegExp(r'(\[|\]|#)'), ''),
+    );
+  }
 }
 
 class OutLinedContainer extends StatelessWidget {

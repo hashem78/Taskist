@@ -42,3 +42,8 @@ class OnlineTasksLoading extends OnlineTasksState {
   @override
   List<Object> get props => [];
 }
+
+class OnlineTaskRemoved extends OnlineTasksState {
+  @override
+  List<Object> get props => [];
+}

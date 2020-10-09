@@ -32,7 +32,7 @@ class TaskistTextField extends StatelessWidget {
         keyboardType: keyboardType ?? TextInputType.multiline,
         textAlign: TextAlign.left,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(left: 25, bottom: 25),
+          contentPadding: const EdgeInsets.all(30),
           labelText: title,
           labelStyle: const TextStyle(color: kTextColor),
           hintText: hintText,

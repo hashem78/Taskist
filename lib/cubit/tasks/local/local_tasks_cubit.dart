@@ -22,6 +22,7 @@ class LocalTasksCubit extends Cubit<LocalTasksState> {
 
   Future<void> remove(String id) async {
     await _repository.remove(id);
+    emit(LocalTaskRemoved());
     //await fetch();
   }
 
