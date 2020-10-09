@@ -26,14 +26,9 @@ class TaskistTextField extends StatelessWidget {
       child: TextFormField(
         textInputAction: textInputAction,
         focusNode: focusNode,
-        // onFieldSubmitted: (_) {
-        //   print("submitted");
-        //   focusNode.unfocus();
-        // },
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: validator != null ? ((text) => validator(text)) : null,
         maxLines: maxLines,
-        //keyboardType: TextInputType.multiline,
         keyboardType: keyboardType ?? TextInputType.multiline,
         textAlign: TextAlign.left,
         decoration: InputDecoration(
