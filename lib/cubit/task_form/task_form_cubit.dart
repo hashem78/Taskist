@@ -24,6 +24,11 @@ class TaskFormCubit extends Cubit<TaskFormState> {
     emit(TaskFormUpdate(taskFormModel: taskFormModel));
   }
 
+  void updatePredicate(TaskPriorityPredicate predicate) {
+    taskFormModel = taskFormModel.copyWith(priorityPredicate: predicate);
+    emit(TaskFormUpdate(taskFormModel: taskFormModel));
+  }
+
   void submit() {
     emit(
       TaskFormSubmitted(

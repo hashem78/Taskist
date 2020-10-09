@@ -12,7 +12,6 @@ import 'components/animated_widget_block.dart';
 import 'constants.dart';
 import 'cubit/tasks/local/local_tasks_cubit.dart';
 import 'cubit/tasks/online/online_tasks_cubit.dart';
-import 'models/task.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -148,24 +147,15 @@ class MainScreen extends StatelessWidget {
         color: Colors.blue,
       ),
       onPressed: () {
-        showModalBottomSheet<TaskModel>(
-          context: context,
-          backgroundColor: Colors.blue,
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: const BorderRadius.only(
-              topLeft: const Radius.circular(50),
-              topRight: const Radius.circular(50),
-            ),
-          ),
-          builder: (_) => AddTaskScreen(),
-        ).then(
+        Navigator.of(context).pushNamed(kaddTasksScreen).then(
           (value) {
-            _localTasksCubit.add(value);
-            _localTasksCubit.fetch();
+            if (value != null) {
+              _localTasksCubit.add(value);
+              _localTasksCubit.fetch();
+            }
           },
         );
-      },
+      }, // showModalBottomSheet<TaskModel>(
     );
   }
 }

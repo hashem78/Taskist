@@ -12,7 +12,10 @@ class TaskDayButton extends StatelessWidget {
     @required this.onTap,
     @required this.isActive,
   });
-
+  TaskDayButton.ignore({
+    @required this.title,
+    @required this.isActive,
+  }) : this.onTap = null;
   @override
   Widget build(BuildContext context) {
     return ClipOval(

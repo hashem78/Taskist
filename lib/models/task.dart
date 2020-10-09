@@ -1,6 +1,7 @@
-import 'package:Taskist/models/task_predicate.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:Taskist/models/task_predicate.dart';
 
 @immutable
 class TaskModel extends Equatable {
@@ -47,4 +48,7 @@ class TaskModel extends Equatable {
     }
     return false;
   }
+
+  @override
+  bool get stringify => true;
 }

@@ -1,4 +1,5 @@
 import 'package:Taskist/models/task.dart';
+import 'package:Taskist/screens/task_details.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
 
@@ -29,8 +30,7 @@ class TaskTile extends StatelessWidget {
                     ),
                   ),
                   context: (context),
-                  builder: (context) =>
-                      Container(), //TaskDetailsScreen(model: model),
+                  builder: (context) => TaskDetailsScreen(model: model),
                 );
               },
               splashColor: Colors.grey,

@@ -22,7 +22,7 @@ class TaskistTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(top: 10),
       child: TextFormField(
         textInputAction: textInputAction,
         focusNode: focusNode,
@@ -37,12 +37,13 @@ class TaskistTextField extends StatelessWidget {
         keyboardType: keyboardType ?? TextInputType.multiline,
         textAlign: TextAlign.left,
         decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(left: 25, bottom: 25),
           labelText: title,
           labelStyle: const TextStyle(color: kTextColor),
           hintText: hintText,
           hintStyle: const TextStyle(color: ksecondaryTextColor),
-          enabledBorder: buildOutlineInputBorder(kaccentColor, 2),
-          focusedBorder: buildOutlineInputBorder(kaccentColor, 3),
+          enabledBorder: buildOutlineInputBorder(Colors.blue, 2),
+          focusedBorder: buildOutlineInputBorder(Colors.blue, 3),
           errorBorder: buildOutlineInputBorder(Colors.red, 2),
           focusedErrorBorder: buildOutlineInputBorder(Colors.redAccent, 3),
         ),

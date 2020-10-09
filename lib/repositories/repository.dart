@@ -38,7 +38,7 @@ abstract class TasksRepository {
         description: rawModel['description'],
         time: rawModel['time'],
         notes: rawModel['notes'],
-        repeats: [false, false, false, false, false, false, false],
+        repeats: List<bool>.from(rawModel['repeats']),
         predicate: rawModel['predicate'] == "high"
             ? HighTaskPriorityPredicate()
             : rawModel['predicate'] == 'medium'
