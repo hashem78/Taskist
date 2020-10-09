@@ -5,10 +5,13 @@ class TaskDayButton extends StatelessWidget {
   final Color activated = Colors.red;
   final Color deactivated = Colors.grey;
   final String title;
-  final int index;
   final bool isActive;
-  TaskDayButton({this.title, this.index}) : isActive = null;
-  TaskDayButton.noModel({this.title, this.isActive}) : index = null;
+  final Function() onTap;
+  TaskDayButton({
+    @required this.title,
+    @required this.onTap,
+    @required this.isActive,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +22,7 @@ class TaskDayButton extends StatelessWidget {
           child: Container(
             width: 35,
             height: 35,
+            color: isActive ? Colors.blue : Colors.grey,
             child: Center(
               child: Text(
                 title,
@@ -30,9 +34,7 @@ class TaskDayButton extends StatelessWidget {
               ),
             ),
           ),
-          onTap: () {
-            //if (index != null) newList.triggerAtIndex(index);
-          },
+          onTap: onTap,
         ),
       ),
     );

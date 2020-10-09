@@ -1,6 +1,6 @@
 import 'package:Taskist/models/task.dart';
 import 'package:Taskist/models/task_predicate.dart';
-import 'package:Taskist/repositories/local_repository.dart';
+import 'package:Taskist/repositories/local.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -22,10 +22,12 @@ class LocalTasksCubit extends Cubit<LocalTasksState> {
 
   Future<void> remove(String id) async {
     await _repository.remove(id);
+    //await fetch();
   }
 
   Future<void> add(TaskModel model) async {
     await _repository.add(model);
+    await fetch();
   }
 
   void fetchWithFilter(TaskPriorityPredicate predicate) {}

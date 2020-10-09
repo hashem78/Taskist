@@ -1,12 +1,31 @@
-import 'package:Taskist/models/task.dart';
-import 'package:Taskist/models/task_predicate.dart';
+import 'package:Taskist/cubit/task_form/task_form_cubit.dart';
 import 'package:Taskist/widgets/task_day_button.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddTaskScreen extends StatelessWidget {
+  final TaskFormCubit _cubit = TaskFormCubit();
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<TaskFormCubit, TaskFormState>(
+      cubit: _cubit,
+      builder: (context, state) {
+        if (state is TaskFormInitial) {
+          return buildScreen(context, state);
+        } else if (state is TaskFormUpdate) {
+          return buildScreen(context, state);
+        } else if (state is TaskFormSubmitted) {
+          Navigator.of(context).pop(state.taskFormModel);
+          //return Container();
+        }
+        return Container();
+      },
+      listener: (context, state) {},
+    );
+  }
+
+  Widget buildScreen(BuildContext context, dynamic state) {
     return Container(
       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5, top: 20),
       child: SingleChildScrollView(
@@ -23,7 +42,7 @@ class AddTaskScreen extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            for (var item in kfieldList) item,
+            for (var field in kfieldList) field,
             Container(
               padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
               decoration: BoxDecoration(
@@ -51,7 +70,8 @@ class AddTaskScreen extends StatelessWidget {
                       for (int i = 0; i < 7; ++i)
                         TaskDayButton(
                           title: kdayTitles[i],
-                          index: i,
+                          isActive: state.taskFormModel.repeats[i],
+                          onTap: () => _cubit.updateDayButtons(i),
                         ),
                     ],
                   ),
@@ -69,43 +89,30 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   Widget buildAddButton(BuildContext context) => ElevatedButton(
-      focusNode: FocusNode(canRequestFocus: true),
-      style: ElevatedButton.styleFrom(
-        elevation: 3,
-        primary: Colors.blue[600],
-        minimumSize: Size(
-          MediaQuery.of(context).size.width,
-          MediaQuery.of(context).size.height / 8,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: const Text(
-          "Add Task",
-          style: const TextStyle(
-            color: kTextColor,
-            fontSize: 25,
+        focusNode: FocusNode(canRequestFocus: true),
+        style: ElevatedButton.styleFrom(
+          elevation: 3,
+          primary: Colors.blue[600],
+          minimumSize: Size(
+            MediaQuery.of(context).size.width,
+            MediaQuery.of(context).size.height / 8,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
           ),
         ),
-      ),
-      onPressed: kfieldList[0].controller.text.isEmpty
-          ? null
-          : () => Navigator.pop(context, buildTaskModel()));
-
-  TaskModel buildTaskModel() => TaskModel(
-        taskName: kfieldList[0].controller.text,
-        description: kfieldList[1].controller.text,
-        notes: kfieldList[2].controller.text,
-        predicate: LowTaskPriorityPredicate(),
-        repeats: List<bool>.filled(7, false),
-        taskId: UniqueKey().toString().replaceAll(RegExp(r'(\[|\]|#)'), ''),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: const Text(
+            "Add Task",
+            style: const TextStyle(
+              color: kTextColor,
+              fontSize: 25,
+            ),
+          ),
+        ),
+        onPressed: _cubit.submit,
       );
-  void resetState() {
-    for (var field in kfieldList) field.controller.clear();
-  }
 }
 // Container(
 //   child: RadioPriorityRow(),

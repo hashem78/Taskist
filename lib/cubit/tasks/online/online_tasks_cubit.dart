@@ -1,6 +1,6 @@
 import 'package:Taskist/models/task.dart';
 import 'package:Taskist/models/task_predicate.dart';
-import 'package:Taskist/repositories/online_repository.dart';
+import 'package:Taskist/repositories/online.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -22,10 +22,12 @@ class OnlineTasksCubit extends Cubit<OnlineTasksState> {
 
   Future<void> remove(String id) async {
     await _repository.remove(id);
+    fetch();
   }
 
   Future<void> add(TaskModel model) async {
     await _repository.add(model);
+    fetch();
   }
 
   void fetchWithFilter(TaskPriorityPredicate predicate) {}
