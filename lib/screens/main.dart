@@ -34,9 +34,11 @@ class MainScreen extends StatelessWidget {
             onSelected: (selected) {
               switch (selected) {
                 case 0:
-                  Navigator.pushNamed(context, ksortedTasksScreen).then(
-                    (value) => _onlineTasksCubit.fetch(),
-                  );
+                  Navigator.pushNamed(context, ksortedTasksScreen)
+                      .then((value) {
+                    _onlineTasksCubit.fetch();
+                    _localTasksCubit.fetch();
+                  });
                   break;
               }
             },

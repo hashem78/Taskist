@@ -13,7 +13,7 @@ class LocalTasksRepository extends TasksRepository {
 
   Future<List<TaskModel>> fetch() async {
     var _internalList = await localDataProvider.fetch();
-    var _listOfData = _tasksFromRawData(_internalList);
+    var _listOfData = tasksFromRawData(_internalList);
     return UnmodifiableListView(_listOfData);
   }
 
@@ -30,11 +30,4 @@ class LocalTasksRepository extends TasksRepository {
 
   Future<void> removeLocal(String id) async =>
       await localDataProvider.remove(id);
-
-  List<TaskModel> _tasksFromRawData(List<Map<String, dynamic>> rawData) {
-    var _internalList = <TaskModel>[];
-
-    rawData.forEach((element) => _internalList.add(jsonToTask(element)));
-    return _internalList;
-  }
 }

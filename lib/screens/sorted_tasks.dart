@@ -1,4 +1,5 @@
 import 'package:Taskist/constants.dart';
+import 'package:Taskist/cubit/tasks/local/local_tasks_cubit.dart';
 import 'package:Taskist/cubit/tasks/online/online_tasks_cubit.dart';
 import 'package:Taskist/models/task_predicate.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,19 @@ class _SortedTasksScreenState extends State<SortedTasksScreen> {
       buildCommonConsumer(
           OnlineTasksCubit(), "Low", LowTaskPriorityPredicate()),
       buildCommonConsumer(OnlineTasksCubit(), "None", NoPriorityPredicate()),
+      Divider(
+        height: 10,
+        color: Colors.red,
+        thickness: 4,
+        indent: 10,
+        endIndent: 10,
+      ),
+      buildCommonConsumer(
+          LocalTasksCubit(), "High", HighTaskPriorityPredicate()),
+      buildCommonConsumer(
+          LocalTasksCubit(), "Medium", MediumTaskPriorityPredicate()),
+      buildCommonConsumer(LocalTasksCubit(), "Low", LowTaskPriorityPredicate()),
+      buildCommonConsumer(LocalTasksCubit(), "None", NoPriorityPredicate()),
     ];
     return Scaffold(
       appBar: AppBar(

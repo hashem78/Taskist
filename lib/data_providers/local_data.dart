@@ -32,14 +32,10 @@ class LocalDataProvider implements DataProvider {
     var _box = await Hive.openBox(_name);
     var _mp = _box.toMap();
     var _internalList = <Map<String, dynamic>>[];
-    _mp.forEach(
-      (key, value) {
-        if (value['predicate'] == predicate.toString())
-          _internalList.add(
-            {
-              key: value,
-            },
-          );
+    _mp.values.forEach(
+      (element) {
+        if (predicate.toString() == element['predicate'])
+          _internalList.add(Map<String, dynamic>.from(element));
       },
     );
     return UnmodifiableListView(_internalList);
