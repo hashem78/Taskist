@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:Taskist/models/task.dart';
 import 'package:Taskist/data_providers/online_data.dart';
+import 'package:Taskist/models/task_predicate.dart';
 import 'package:Taskist/repositories/repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -14,6 +15,12 @@ class OnlineTasksRepository extends TasksRepository {
 
   Future<List<TaskModel>> fetch() async {
     var _internalList = await onlineDataProvider.fetch();
+    var _listOfData = tasksFromRawData(_internalList);
+    return UnmodifiableListView(_listOfData);
+  }
+
+  Future<List<TaskModel>> filter(TaskPriorityPredicate predicate) async {
+    var _internalList = await onlineDataProvider.fetchWithPredicate(predicate);
     var _listOfData = tasksFromRawData(_internalList);
     return UnmodifiableListView(_listOfData);
   }

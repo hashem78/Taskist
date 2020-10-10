@@ -1,5 +1,6 @@
-import 'package:Taskist/screens/add_tasks_screen.dart';
+import 'package:Taskist/screens/add_tasks.dart';
 import 'package:Taskist/screens/main.dart';
+import 'package:Taskist/screens/sorted_tasks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       routes: {
         kmainScreen: (_) => MainScreen(),
         kaddTasksScreen: (_) => AddTaskScreen(),
+        ksortedTasksScreen: (_) => SortedTasksScreen(),
       },
       theme: ThemeData(
         accentColor: kaccentColor,

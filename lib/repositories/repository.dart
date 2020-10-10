@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:Taskist/models/task.dart';
 
 import 'package:flutter/foundation.dart';
@@ -19,18 +17,7 @@ abstract class TasksRepository {
     return _internalList;
   }
 
-  List<TaskModel> filter(
-      List<TaskModel> taskList, TaskPriorityPredicate predicate) {
-    var _internalList = <TaskModel>[];
-    taskList.forEach(
-      (element) {
-        if (element.predicate == predicate) {
-          _internalList.add(element);
-        }
-      },
-    );
-    return UnmodifiableListView(_internalList);
-  }
+  Future<List<TaskModel>> filter(TaskPriorityPredicate predicate);
 
   TaskModel jsonToTask(Map<String, dynamic> rawModel) => TaskModel(
         taskId: rawModel['taskId'],

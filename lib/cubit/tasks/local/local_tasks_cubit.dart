@@ -1,29 +1,27 @@
+import 'package:Taskist/cubit/tasks/common_state.dart';
 import 'package:Taskist/models/task.dart';
 import 'package:Taskist/models/task_predicate.dart';
 import 'package:Taskist/repositories/local.dart';
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-part 'local_tasks_state.dart';
 
-class LocalTasksCubit extends Cubit<LocalTasksState> {
+class LocalTasksCubit extends Cubit<CommonTasksState> {
   LocalTasksCubit({
     this.localName = 'localData',
   })  : _repository = LocalTasksRepository(localName),
-        super(LocalTasksInitial());
+        super(CommonTasksInitial());
   final String localName;
 
   final LocalTasksRepository _repository;
 
   Future<void> fetch() async {
-    emit(LocalTasksLoading());
-    await _repository.fetch().then((value) => _response(value));
+    var _values = await _repository.fetch();
+    _response(_values);
   }
 
   Future<void> remove(String id) async {
     await _repository.remove(id);
-    emit(LocalTaskRemoved());
-    //await fetch();
+    emit(CommonTaskRemoved());
+    await fetch();
   }
 
   Future<void> add(TaskModel model) async {
@@ -31,16 +29,27 @@ class LocalTasksCubit extends Cubit<LocalTasksState> {
     await fetch();
   }
 
-  void fetchWithFilter(TaskPriorityPredicate predicate) {}
+  Future<void> removeFiltered(
+      String id, TaskPriorityPredicate predicate) async {
+    emit(CommonTaskRemoved());
+    await _repository.remove(id);
+    var _value = await _repository.filter(predicate);
+    _response(_value);
+  }
+
+  void filter(TaskPriorityPredicate predicate) async {
+    var _value = await _repository.filter(predicate);
+    _response(_value);
+  }
 
   void _response(List<TaskModel> value) {
     if (value.isEmpty) {
       emit(
-        LocalTasksEmpty(message: "There are no tasks to show!"),
+        CommonTasksEmpty(message: "There are no tasks to show!"),
       );
     } else {
       emit(
-        LocalTasksLoaded(
+        CommonTasksLoaded(
             message: "Fetched latest tasks sucessfully", tasks: value),
       );
     }

@@ -67,6 +67,9 @@ class WidgetBlock extends StatelessWidget {
                       return Container();
                     },
                   ),
+                  Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 5, horizontal: 5)),
                 ],
               ),
             ),

@@ -14,6 +14,7 @@ const kappTitle = "Taskist";
 
 const kmainScreen = "/";
 const kaddTasksScreen = "/addtasks";
+const ksortedTasksScreen = "/sortedtasks";
 const List<String> kdayTitles = const [
   "S",
   "S",
