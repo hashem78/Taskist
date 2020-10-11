@@ -1,4 +1,5 @@
 import 'package:Taskist/cubit/tasks/common_state.dart';
+import 'package:Taskist/models/task.dart';
 import 'package:Taskist/models/task_predicate.dart';
 import 'package:Taskist/widgets/task_tile.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,8 @@ Widget buildLocalBlock(BuildContext context, String blockTitle, cubit,
   List<Widget> children =
       List<Widget>.from(state.tasks.map((e) => TaskTile(model: e)));
   return AnimatedWidgetBlock(
-    onChildDismissed: (String id) async {
-      await cubit.removeFiltered(id, predicate);
+    onChildDismissed: (TaskModel model) async {
+      await cubit.removeFiltered(model.taskId, predicate);
     },
     title: blockTitle,
     children: children,
@@ -42,7 +43,8 @@ Widget buildCommonConsumer<C extends Cubit<S>, S>(
       },
       listener: (context, state) {
         if (state is CommonTaskRemoved) {
-          Scaffold.of(context).showSnackBar(buildRemovedTaskSnackBar());
+          Scaffold.of(context)
+              .showSnackBar(buildRemovedTaskSnackBar(cubit, state.model));
         }
       },
     );

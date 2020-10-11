@@ -1,5 +1,6 @@
 import 'package:Taskist/components/animated_posionted_arrow.dart';
 import 'package:Taskist/constants.dart';
+import 'package:Taskist/models/task.dart';
 import 'package:flutter/material.dart';
 
 class WidgetBlock extends StatelessWidget {
@@ -8,7 +9,7 @@ class WidgetBlock extends StatelessWidget {
   final bool collapsed;
   final ValueNotifier<bool> collapseNotifier;
   final String emptyMessage;
-  final Function(String) onChildDismissed;
+  final Function(TaskModel) onChildDismissed;
   WidgetBlock({
     this.children,
     this.title,
@@ -101,7 +102,7 @@ class WidgetBlock extends StatelessWidget {
         return Dismissible(
           key: UniqueKey(),
           child: widget,
-          onDismissed: (_) => onChildDismissed(widget.model.taskId),
+          onDismissed: (_) => onChildDismissed(widget.model),
         );
       },
     );

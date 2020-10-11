@@ -46,6 +46,10 @@ class CommonTasksLoading extends CommonTasksState {
 }
 
 class CommonTaskRemoved extends CommonTasksState {
+  final TaskModel model;
+
+  CommonTaskRemoved({@required this.model});
+
   @override
   List<Object> get props => [];
 }

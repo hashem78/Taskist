@@ -1,10 +1,11 @@
+import 'package:Taskist/models/task.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/widgets/widget_block.dart';
 
 class AnimatedWidgetBlock extends StatefulWidget {
   final List<dynamic> children;
   final WidgetBlock wblock;
-  final Function(String id) onChildDismissed;
+  final Function(TaskModel model) onChildDismissed;
   final String title;
   AnimatedWidgetBlock({
     @required this.children,

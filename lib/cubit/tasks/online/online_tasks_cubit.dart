@@ -17,16 +17,16 @@ class OnlineTasksCubit extends Cubit<CommonTasksState> {
     _response(value);
   }
 
-  Future<void> remove(String id) async {
-    emit(CommonTaskRemoved());
-    await _repository.remove(id);
+  Future<void> remove(TaskModel model) async {
+    emit(CommonTaskRemoved(model: model));
+    await _repository.remove(model.taskId);
     await fetch();
   }
 
   Future<void> removeFiltered(
-      String id, TaskPriorityPredicate predicate) async {
-    emit(CommonTaskRemoved());
-    await _repository.remove(id);
+      TaskModel model, TaskPriorityPredicate predicate) async {
+    emit(CommonTaskRemoved(model: model));
+    await _repository.remove(model.taskId);
     var _value = await _repository.filter(predicate);
     _response(_value);
   }

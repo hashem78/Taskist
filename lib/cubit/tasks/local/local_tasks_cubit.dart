@@ -18,9 +18,9 @@ class LocalTasksCubit extends Cubit<CommonTasksState> {
     _response(_values);
   }
 
-  Future<void> remove(String id) async {
-    await _repository.remove(id);
-    emit(CommonTaskRemoved());
+  Future<void> remove(TaskModel model) async {
+    await _repository.remove(model.taskId);
+    emit(CommonTaskRemoved(model: model));
     await fetch();
   }
 
@@ -30,9 +30,9 @@ class LocalTasksCubit extends Cubit<CommonTasksState> {
   }
 
   Future<void> removeFiltered(
-      String id, TaskPriorityPredicate predicate) async {
-    emit(CommonTaskRemoved());
-    await _repository.remove(id);
+      TaskModel model, TaskPriorityPredicate predicate) async {
+    await _repository.remove(model.taskId);
+    emit(CommonTaskRemoved(model: model));
     var _value = await _repository.filter(predicate);
     _response(_value);
   }
