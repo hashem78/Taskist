@@ -3,6 +3,9 @@ import 'package:Taskist/widgets/task_day_button.dart';
 import 'package:flutter/material.dart';
 import 'package:Taskist/constants.dart';
 
+const _noNotes = "There are no notes on this task";
+const _noDescription = "There is no description for this task";
+
 class TaskDetailsScreen extends StatelessWidget {
   const TaskDetailsScreen({
     Key key,
@@ -20,13 +23,39 @@ class TaskDetailsScreen extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         child: Wrap(
           children: [
-            Center(
-              child: Text(
-                model.taskName,
-                style: TextStyle(
-                  fontSize: 60,
-                  color: kTextColor,
-                ),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "${model.taskName}\n",
+                    style: TextStyle(color: Colors.greenAccent, fontSize: 60),
+                  ),
+                  TextSpan(
+                    text: "Description\n",
+                    style: TextStyle(fontSize: 40, color: kTextColor),
+                  ),
+                  TextSpan(
+                    text:
+                        "     ${model.description.isEmpty ? _noDescription : model.description}\n",
+                    style: TextStyle(
+                      fontSize: 25,
+                      color:
+                          model.description.isEmpty ? Colors.red : Colors.black,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Notes\n",
+                    style: TextStyle(fontSize: 40, color: kTextColor),
+                  ),
+                  TextSpan(
+                    text:
+                        "     ${model.notes.isEmpty ? _noNotes : model.notes}\n",
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: model.notes.isEmpty ? Colors.red : Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
             Row(
@@ -38,33 +67,6 @@ class TaskDetailsScreen extends StatelessWidget {
                     isActive: model.repeats[i],
                   ),
               ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                model.description,
-                textAlign: TextAlign.start,
-                style: const TextStyle(fontSize: 25, color: kTextColor),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Notes:",
-                textAlign: TextAlign.start,
-                style: const TextStyle(fontSize: 35, color: kTextColor),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                model.notes,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.red[900],
-                ),
-              ),
             ),
           ],
         ),

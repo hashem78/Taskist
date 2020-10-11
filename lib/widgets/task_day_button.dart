@@ -19,13 +19,14 @@ class TaskDayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipOval(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Material(
         child: InkWell(
           splashColor: Colors.grey, // inkwell color
           child: Container(
             width: 35,
             height: 35,
-            color: isActive ? Colors.blue : Colors.grey,
+            color: isActive ? Colors.green : Colors.grey,
             child: Center(
               child: Text(
                 title,
